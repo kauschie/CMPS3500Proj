@@ -28,7 +28,11 @@ print(csv_arr.values[1,16])
 
 Prints elements all elements on column 1 uptil row 4
 print(csv_arr.values[:4,1])
+
+Note: all null data points are set to NaN by default
 """
 print("Read time: ", (e_time-s_time), "\n")
 print(csv_arr)
+
+
 
