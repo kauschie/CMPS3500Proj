@@ -2,7 +2,7 @@
 # CMPS3500 Group 6
 - Michael
 - Irvin x
-- David
+- David x 
 - Samantha x
 - Raul x
 
@@ -20,6 +20,18 @@
 
 - Data exploration
     - Reading CSV into a data structure (Irvin)
+        - 1 dictionary data structure
+
+        - {key : [col1, col2, col3, col4, ... col29]}
+
+        - 2d list  
+        [
+            [col1, col2, col3... col20]
+            [col1, col2, col3... col20] 
+            [col1, col2, col3... col20]
+            [col1, col2, col3... col20]
+            [col1, col2, col3... col20]
+        ]
     - count distinct values
     - search any value in any column input by user
     - sort numerical / non-numerical columns
