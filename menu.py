@@ -1,6 +1,8 @@
 import os
 
-def get_response(foo, max_val, min_val=1):
+import files
+
+def getResponse(foo, max_val, min_val=1):
     '''Takes in a print function (foo) and tests against minumum
         and maximum menu options.
         Function returns an integer value that met the response criteria'''
@@ -26,7 +28,7 @@ def get_response(foo, max_val, min_val=1):
         
     return response
             
-def print_base_menu():
+def printBaseMenu():
     print("Main Menu:")
     print("**********")
     print("1. Load Data")
@@ -34,12 +36,38 @@ def print_base_menu():
     print("3. Data Analysis")
     print("4. Print Data Set")
     print("5. Quit")
+
+def printDataSelectMenu(menu_list=None):
+    """prints data select menu
+
+    Args:
+        menu_list (list of menu items, optional): Defaults to None.
+    """
     
+    if (menu_list == None):
+        menu_list = files.getCsvFileList()
+    print("Load data set:")
+    print("***************")
+    
+    print(f"Please select from the following available files:")
+    for i in range(len(menu_list)):
+        print(f"\t[{i+1}]: {menu_list[i]}")
     
 def main():
-    print_base_menu()
-    menu_option = get_response(print_base_menu, 5, 1)
-    print("you selected option", menu_option)
+    printBaseMenu()
+    menu_option = getResponse(printBaseMenu, 5, 1)
+    print("you selected option", menu_option)   #debug
+    if (menu_option == 1):
+        menu_list = files.getCsvFileList()
+        printDataSelectMenu(menu_list)
+        sub_menu_option = getResponse(printDataSelectMenu, len(menu_list), 1)
+        print("calling readFile on",menu_list[sub_menu_option-1])
+        
+        
+
+        
+        
+    
 
 
 if __name__ == '__main__':
