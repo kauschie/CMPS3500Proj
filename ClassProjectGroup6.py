@@ -152,13 +152,13 @@ def printDataExpMenu():
     print("26. Back to the Main Menu")
         
 
-def printDropHeaders(header_list):
-    printHeaders(header_list)
+def printDropHeaders(excl_header_list):
+    printHeaders(excl_header_list)
     print("Enter a column number to drop")
     print("Enter -1 to finish entering columns")
     
-def printInclHeaders(header_list):
-    printHeaders(header_list)
+def printInclHeaders(incl_header_list):
+    printHeaders(incl_header_list)
     print("Enter a column number to add")
     print("Enter -1 to finish entering columns")    
    
@@ -166,6 +166,14 @@ def printHeaders(header_list):
     for i in range(len(header_list)):
         print(f"[{i}] {header_list[i]}")
     
+def printDescribeColMenu(incl_header_list):
+    print("Describe Columns:")
+    print("*****************")
+    print("*****************")
+    printHeaders(incl_header_list)
+    print("Enter the column number to desribe")
+
+'''Main Logic // Menu loop'''
 def main():
     
     menu_option = None
@@ -257,17 +265,38 @@ def main():
                         
                         if (col_number != -1):
                             excluded_headers.append(included_headers[col_number])
-                            print(f"excluded headers last: {excluded_headers[-1]}")
+                            # print(f"excluded headers last: {excluded_headers[-1]}")
                             included_headers.remove(included_headers[col_number])
-                            print("included_headers now***")
-                            print(included_headers)
+                            # print("included_headers now***")
+                            # print(included_headers)
                             
                     print("Finished removing columns")
+                    print(f"There are currently {len(excluded_headers)} items being excluded.")
                     input("press any key to continue...")
+                    col_number = 0
                     
                 elif (sub_menu_option == 23):
                     # Desribe Columns
-                    input("describing the columns..")
+                    # input("describing the columns..")
+                    
+                    
+                    
+                    
+                    
+                    
+                    s_time = time.time()
+                    
+                    
+                    
+                    e_time = time.time()
+                    print("[start time]", s_time)
+                    print("[end time]", e_time)
+                    print("Time to load:", (e_time-s_time),"sec.")
+                    
+                    
+                    
+                    
+                    
                     
                 elif (sub_menu_option == 24):
                     # Search Element in Column
@@ -275,7 +304,25 @@ def main():
                     
                 elif (sub_menu_option == 25):
                     # add back a dropped column
-                    input("adding back a dropped column...")
+                    # input("adding back a dropped column...")
+                     # Drop Columns
+                    while (col_number != -1):
+                        printInclHeaders(excluded_headers)
+                        col_number = getResponse(printInclHeaders, -1, len(excluded_headers)-1, arg_list=excluded_headers)
+                        # print("col_number now",col_number)
+                        
+                        if (col_number != -1):
+                            
+                            included_headers.append(excluded_headers[col_number])
+                            # print(f"included headers last: {included_headers[-1]}")
+                            excluded_headers.remove(excluded_headers[col_number])
+                            # print("excluded_headers now***")
+                            # print(excluded_headers)
+                            
+                    print("Finished adding back columns")
+                    print(f"There are currently {len(excluded_headers)} items still being excluded.")
+
+                    input("press any key to continue...")
                     
                 elif (sub_menu_option == 26):
                     # back to the main menu
