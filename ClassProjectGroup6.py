@@ -95,16 +95,21 @@ def getResponse(foo, min_val, max_val, **kwargs):
             if ((response < min_val) or (response > max_val)):
                 os.system('clear')
                 if 'arg_list' in kwargs:
-                    foo(arg_list)
+                    foo(kwargs.get('arg_list'))
                 else:
-                    print('arg list not found so calling reg foo()')
-                    input()
                     foo()
                 print(response, "is not in the range of acceptable values.")
                 print("Enter a value between", min_val, "and", max_val)
         except:
             os.system('clear')
-            foo()
+            
+            if 'arg_list' in kwargs:
+                foo(kwargs.get('arg_list'))
+            else:
+                print('arg list not found so calling reg foo()')
+                input()
+                foo()
+                
             print(str_response, "is not a valid response. Please enter an integer.")
             response = -2
         
@@ -147,9 +152,19 @@ def printDataExpMenu():
     print("26. Back to the Main Menu")
         
 
-def printHeaders(headerList):
-    for i in range(len(headerList)):
-        print(f"[{i}] {headerList[i]}")
+def printDropHeaders(header_list):
+    printHeaders(header_list)
+    print("Enter a column number to drop")
+    print("Enter -1 to finish entering columns")
+    
+def printInclHeaders(header_list):
+    printHeaders(header_list)
+    print("Enter a column number to add")
+    print("Enter -1 to finish entering columns")    
+   
+def printHeaders(header_list):
+    for i in range(len(header_list)):
+        print(f"[{i}] {header_list[i]}")
     
 def main():
     
@@ -218,25 +233,27 @@ def main():
                 if (sub_menu_option == 21):
                     # list all columns
                     
+                    print("*****************")
+                    print("*****************")
                     print("Included Headers:")
                     print("*****************")
                     printHeaders(included_headers)
                     print("*****************")
+                    print("*****************")
                     print("Excluded Headers:")
                     print("*****************")
                     printHeaders(excluded_headers)
-                    input("press enter to continue...")
+                    print("*****************")
+                    print("*****************")
+                    input(f"\npress enter to continue...")
                     continue
                     
                 elif (sub_menu_option == 22):
                     # Drop Columns
                     while (col_number != -1):
-                        printHeaders(included_headers)
-                        print("Enter a column number to drop")
-                        print("Enter -1 to finish entering columns")
-                        col_number = getResponse(printHeaders, -1, len(included_headers)-1, arg_list=included_headers)
-                        print("col_number now",col_number)
-                        
+                        printDropHeaders(included_headers)
+                        col_number = getResponse(printDropHeaders, -1, len(included_headers)-1, arg_list=included_headers)
+                        # print("col_number now",col_number)
                         
                         if (col_number != -1):
                             excluded_headers.append(included_headers[col_number])
