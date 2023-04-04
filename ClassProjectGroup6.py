@@ -337,14 +337,20 @@ def main():
                     
                     print("*****************")
                     print("*****************")
-                    print("Included Headers:")
+                    print("Included Columns:")
                     print("*****************")
-                    printHeaders(included_headers)
+                    if (len(included_headers) > 0):
+                        printHeaders(included_headers)
+                    else:
+                        print("No columns are currently included")
                     print("*****************")
                     print("*****************")
-                    print("Excluded Headers:")
+                    print("Excluded Columns:")
                     print("*****************")
-                    printHeaders(excluded_headers)
+                    if (len(excluded_headers) > 0):
+                        printHeaders(excluded_headers)
+                    else:
+                        print("No columns are currently excluded")
                     print("*****************")
                     print("*****************")
                     input(f"\npress enter to continue...")
@@ -427,7 +433,7 @@ def main():
                         print("stats printed successfully!")
                         print("Time to process is", (e_time-s_time),"sec.")
                     else:
-                        print(f"could not locate {search_ele} in the data")
+                        print(f"could not locate (({search_ele})) in the data")
                         print("Total search time was", (e_time-s_time),"sec.")
                     
                     input("Press any key to continue")
