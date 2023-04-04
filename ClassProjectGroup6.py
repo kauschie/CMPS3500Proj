@@ -135,8 +135,8 @@ def printDataSelectMenu(menu_list=None):
     Args:
         menu_list (list of menu items, optional): Defaults to None.
     """
-    print("menu_list passed in:")
-    print(menu_list)
+    # print("menu_list passed in:")
+    # print(menu_list)
     # if (menu_list == None):
     #     menu_list = files.getCsvFileList()
     print("Load data set:")
@@ -188,6 +188,40 @@ def printSearchMenu(header_list):
     print("Select the column number to perform a search")
     print("Enter -1 to finish entering columns")
 
+def printDataAnalysis(df):
+    print("Data Analysis:")
+    print("***************")
+    print("Show the total unique count of crimes per year sorted in descending order:")
+    # printTotalUniqueCount(df) # TODO
+    print(f"\nShowt he top 5 areas with the most crime events in all years:")
+    # printTopFiveAreas(df) # TODO
+    print("Show all months and the unique total count of crimes sorted in increasing order.")
+    # printMonthsUniqueCrimes(df) # TODO
+    print("Show the top 10 streets with the most crimes in LA in 2019. Also display the total amount of crimes in each street.")
+    # printTop10Streets(df) # TODO
+    print("Show the top 5 most dangerous times (in hours) to be in Hollywood. Also display the total amount of crimes in each hour.")
+    # printTop5HWood(df) # TODO
+    print("Print the details of the crime that that took the most time (in hours) to be reported.")
+    # printMostTime(df) # TODO
+    print("Show the 10 top most common crime types (Crm Cd Desc) overall across all years.")
+    # printMostCommonCrime(df) # TODO
+    print("Are woman or men more likely to be the victim of a crime in LA between lunch time (11:00am and 1:00pm)?. Support of your answer.")
+    # printLALunchTime(df) # TODO
+    print("What is the month the has the most major credit card frauds (Crm Cd Desc = 'CREDIT CARDS, FRAUD USE ($950 & UNDER')) in LA in 2019.")
+    # printCCFrauds(df) # TODO
+    print("List the top 5 more dangerous areas for older man (age from 65 and more) in december of 2018 in West LA.")
+    # printOlderManTop5(df) # TODO
+
+
+def printMenu():
+    print("  Print Menu  :")
+    print("***************")
+    print(f"\t[0] = first 100 lines")
+    print(f"\t[1] = first 1000 lines")
+    print(f"\t[2] = first 5000 lines\n")
+    print(f"Select how many rows to print")
+    print("Enter -1 to go back")
+
 
 '''Main Logic // Menu loop'''
 def main():
@@ -199,8 +233,42 @@ def main():
     excluded_headers = []
     all_headers = []
     
-    data_types = ["int", "int", "string", "string"]
-    
+    data_bools = [dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #0
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #1
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #2
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #3
+                    
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #4
+                    
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #5
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #6
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #7
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #8
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #9
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #10
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #11
+                    
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #12
+                    
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=False, max=False), #13
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=False, max=False), #14
+                    
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #15
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #16
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #17
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #18
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #19
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #20
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #21
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #22
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #23
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #24
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #25
+                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #26
+                    
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #27
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #28
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True)] #29
     
     while (menu_option != 5):
         os.system("clear")
@@ -210,9 +278,11 @@ def main():
         
         printBaseMenu()
         menu_option = getResponse(printBaseMenu, 1, 5)
-        print("you selected option", menu_option)   #debug
+        # print("you selected option", menu_option)   #debug
+        
         
         if (menu_option== 1):
+            os.system("clear")
             menu_list = getCsvFileList()
             printDataSelectMenu(menu_list)
             sub_menu_option = getResponse(printDataSelectMenu, 1, len(menu_list), arg_list=menu_list)
@@ -222,14 +292,19 @@ def main():
             try:
                 s_time = time.time()
                 data_frame = readFile(menu_list[sub_menu_option-1])
+                data_frame
                 e_time = time.time()
                 print("[start time]", s_time)
                 print("[end time]", e_time)
                 print("Time to load:", (e_time-s_time),"sec.")
                 included_headers = list(data_frame.columns)
-                all_headers = included_headers # save backup of all column names
+                all_headers = included_headers.copy() # save backup of all column names
                 # print("included headers:")
                 # print(included_headers)
+                print(f"Total Columns Read: {len(all_headers)}")
+                print(f"Total Rows Read (ndim): {len(data_frame.index)}")
+                # print(f"\nTotal Elements (Not null) in each category:\n\n{data_frame.notna().sum()}")
+                
             except:
                 error_msg = f"could not load data file {menu_list[sub_menu_option-1]}"
 
@@ -341,8 +416,22 @@ def main():
                     # TODO: Need to make 1:1 list of variable type so that I can 
                     #       check and see if the correct element was input
 
-                    # if (data_types )
+                    is_found = False
+                    s_time = time.time()
+                    # should return a bool
+                    # is_found = search(data_frame, col_number, search_ele) # TODO: search function
+                    e_time = time.time()
                     
+                    
+                    if (is_found):
+                        print("stats printed successfully!")
+                        print("Time to process is", (e_time-s_time),"sec.")
+                    else:
+                        print(f"could not locate {search_ele} in the data")
+                        print("Total search time was", (e_time-s_time),"sec.")
+                    
+                    input("Press any key to continue")
+                    continue
                     
                 elif (sub_menu_option == 25):
                     # add back a dropped column
@@ -389,8 +478,9 @@ def main():
                 Select option 1 from the main menu"""
                 continue
             
-            print("Data Analysis Section")
-            error_msg = "Data Analysis Section"
+            printDataAnalysis(data_frame)
+            
+            input("Press any key to continue...")
             continue
         elif (menu_option == 4):
             # Print Data Set
@@ -398,13 +488,18 @@ def main():
                 error_msg = """You haven't loaded any data yet! 
                 Select option 1 from the main menu"""
                 continue
-                
-            print("Print Data Section")
-            error_msg = "Print Data Section"
+            num_rows = [100, 1000, 5000]
+            printMenu()
+            sub_menu_option = getResponse(printMenu, -1, 3)
+            
+            print(f"printing {num_rows[sub_menu_option]} number of rows...\n")
+            # printDataset(data_frame, num_rows) # TODO
+            print("done printing")
+            input("Press any key to continue...")
+            
+            # error_msg = "Print Data Section"
             continue
-            # getPrintColumns(data_frame)
-            
-            
+        
             # Prints specific rows in array:
             # print(data_frame[0:9])
             # print(data_frame.loc[0:9,"DR_NO"])
