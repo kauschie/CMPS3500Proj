@@ -6,8 +6,13 @@ ORGN: CSUB - CMPS 3500
 FILE: ClassProjectGroup6.py
 DATE: 3/30/2023
 
-
 """
+
+# TODO:
+#   - Data Structure for holding whether column vals are strings or floats
+#   - this should coincide with the excel spreadsheet as well?
+
+
 
 import pandas as pd
 import time
@@ -106,8 +111,8 @@ def getResponse(foo, min_val, max_val, **kwargs):
             if 'arg_list' in kwargs:
                 foo(kwargs.get('arg_list'))
             else:
-                print('arg list not found so calling reg foo()')
-                input()
+                # print('arg list not found so calling reg foo()')
+                # input()
                 foo()
                 
             print(str_response, "is not a valid response. Please enter an integer.")
@@ -130,9 +135,10 @@ def printDataSelectMenu(menu_list=None):
     Args:
         menu_list (list of menu items, optional): Defaults to None.
     """
-    
-    if (menu_list == None):
-        menu_list = files.getCsvFileList()
+    print("menu_list passed in:")
+    print(menu_list)
+    # if (menu_list == None):
+    #     menu_list = files.getCsvFileList()
     print("Load data set:")
     print("***************")
     
@@ -172,6 +178,16 @@ def printDescribeColMenu(incl_header_list):
     print("*****************")
     printHeaders(incl_header_list)
     print("Enter the column number to desribe")
+    print("Enter -1 to finish entering columns")    
+    
+def printSearchMenu(header_list):
+    print("Search Element in Column:")
+    print("**************************")
+    for i in range(len(header_list)):
+        print(f"[{i}] {header_list[i]}")   
+    print("Select the column number to perform a search")
+    print("Enter -1 to finish entering columns")
+
 
 '''Main Logic // Menu loop'''
 def main():
@@ -181,6 +197,9 @@ def main():
     error_msg = ""
     included_headers = []
     excluded_headers = []
+    all_headers = []
+    
+    data_types = ["int", "int", "string", "string"]
     
     
     while (menu_option != 5):
@@ -196,7 +215,7 @@ def main():
         if (menu_option== 1):
             menu_list = getCsvFileList()
             printDataSelectMenu(menu_list)
-            sub_menu_option = getResponse(printDataSelectMenu, 1, len(menu_list))
+            sub_menu_option = getResponse(printDataSelectMenu, 1, len(menu_list), arg_list=menu_list)
             print("calling readFile on",menu_list[sub_menu_option-1])
             
             
@@ -208,6 +227,7 @@ def main():
                 print("[end time]", e_time)
                 print("Time to load:", (e_time-s_time),"sec.")
                 included_headers = list(data_frame.columns)
+                all_headers = included_headers # save backup of all column names
                 # print("included headers:")
                 # print(included_headers)
             except:
@@ -230,14 +250,13 @@ def main():
             while (sub_menu_option != 26):
                 # get user input until correct
                 os.system("clear")
+                if (print_msg != "" ):
+                    print(print_msg)
+                    print_msg = ""
                 printDataExpMenu()
                 sub_menu_option = getResponse(printDataExpMenu, 21, 26)
                 col_number = 0
 
-                if (print_msg != "" ):
-                    print(print_msg)
-                    print_msg = ""
-                
                 if (sub_menu_option == 21):
                     # list all columns
                     
@@ -279,33 +298,61 @@ def main():
                     # Desribe Columns
                     # input("describing the columns..")
                     
+                    printDescribeColMenu(included_headers)
+                    col_number = getResponse(printDescribeColMenu, -1, len(included_headers)-1, arg_list=included_headers)
+                    if (col_number == -1):
+                        col_number = 0
+                        continue
                     
+                    # TODO: function to retrieve all of the stats: describeColumn
+                    #  - return dictionary of count, unique, mean, median, mode, stdev, variance, minimum, maximum
+
                     
-                    
-                    
-                    
-                    s_time = time.time()
-                    
-                    
-                    
-                    e_time = time.time()
-                    print("[start time]", s_time)
-                    print("[end time]", e_time)
-                    print("Time to load:", (e_time-s_time),"sec.")
-                    
-                    
-                    
-                    
-                    
+                    print(f"{included_headers[col_number]} stats:")
+                    print("============================")
+
+                    try:
+                        s_time = time.time()
+                        #stats = describeColumn(data_frame, included_headers[col_number]) # TODO
+                        e_time = time.time()
+                        # printStats(stats) # TODO
+                        
+                        print("stats printed successfully!")
+                        print("Time to process is", (e_time-s_time),"sec.")
+                    except:
+                        print("stats did not process successfully")
+                        
+                    print("====== End Print ======")
+                    input("Press any key to continue...")
+                        
+                    continue
                     
                 elif (sub_menu_option == 24):
                     # Search Element in Column
-                    input("searching the columns..")
+                    # input("searching the columns..")
+                    printSearchMenu(all_headers)
+                    col_number = getResponse(printSearchMenu, -1, len(all_headers)-1, arg_list=all_headers)
+                    if (col_number == -1):
+                        col_number = 0
+                        continue
+                    
+                    search_ele = input("Enter the search value: ")
+                    
+                    # TODO: Need to make 1:1 list of variable type so that I can 
+                    #       check and see if the correct element was input
+
+                    # if (data_types )
+                    
                     
                 elif (sub_menu_option == 25):
                     # add back a dropped column
                     # input("adding back a dropped column...")
                      # Drop Columns
+                     
+                    if (len(excluded_headers) == 0):
+                        print_msg = "There are currently 0 excluded columns so there's none to add back!"
+                        continue
+                     
                     while (col_number != -1):
                         printInclHeaders(excluded_headers)
                         col_number = getResponse(printInclHeaders, -1, len(excluded_headers)-1, arg_list=excluded_headers)
@@ -321,7 +368,7 @@ def main():
                             
                     print("Finished adding back columns")
                     print(f"There are currently {len(excluded_headers)} items still being excluded.")
-
+                    col_number = 0
                     input("press any key to continue...")
                     
                 elif (sub_menu_option == 26):
@@ -364,6 +411,8 @@ def main():
             # data_frame.to_csv('output.csv',)
             
         
+
+
 
 
 if __name__ == '__main__':
