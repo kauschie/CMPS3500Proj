@@ -18,17 +18,12 @@ import pandas as pd
 import time
 import os
 
-
-def getPrintColumns(dframe):
-    headers = list(dframe.columns)
-    print(headers)
-
 #Time to read and store data in an array
 
 def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
-    s_time = time.time()
+    # s_time = time.time()
     csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True)    
-    e_time = time.time()
+    # e_time = time.time()
     """
     If you want to access elements of csv_array or want to see the whole array use the following:
 
@@ -46,7 +41,7 @@ def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
 
     Note: all null data points are set to NaN by default
     """
-    print("Read time: ", (e_time-s_time), "\n")
+    # print("Read time: ", (e_time-s_time), "\n")
     # print(csv_arr)
 
     return(csv_arr)
@@ -77,10 +72,25 @@ def getCsvFileList():
     # print(files) # debug
     return files
 
+
+def sortData(dframe, column_name):
+    ''' method for sorting data frame data by passed in column_name'''
+    pass
+
+def describeColumn(data_list):
+    # TODO
+    # call uniqueCount(data_list)
+    print(data_list)
+    
+    pass
+
+
 def getResponse(foo, min_val, max_val, **kwargs):
     '''Takes in a print function (foo) and tests against minumum
         and maximum menu options.
-        Function returns an integer value that met the response criteria'''
+        Function returns an integer value that met the response criteria
+        if function foo takes parameters (like a list), they are included as a key word
+        argument arg_list'''
     response = -2
     
     if 'arg_list' not in kwargs:
@@ -286,8 +296,8 @@ def main():
             menu_list = getCsvFileList()
             printDataSelectMenu(menu_list)
             sub_menu_option = getResponse(printDataSelectMenu, 1, len(menu_list), arg_list=menu_list)
-            print("calling readFile on",menu_list[sub_menu_option-1])
-            
+            # print("calling readFile on",menu_list[sub_menu_option-1])
+            print("")
             
             try:
                 s_time = time.time()
@@ -301,8 +311,8 @@ def main():
                 all_headers = included_headers.copy() # save backup of all column names
                 # print("included headers:")
                 # print(included_headers)
-                print(f"Total Columns Read: {len(all_headers)}")
-                print(f"Total Rows Read (ndim): {len(data_frame.index)}")
+                print(f"\nTotal Columns Read: {len(all_headers)}")
+                print(f"Total Rows Read: {len(data_frame.index)}")
                 # print(f"\nTotal Elements (Not null) in each category:\n\n{data_frame.notna().sum()}")
                 
             except:
@@ -359,6 +369,7 @@ def main():
                 elif (sub_menu_option == 22):
                     # Drop Columns
                     while (col_number != -1):
+                        os.system("clear")
                         printDropHeaders(included_headers)
                         col_number = getResponse(printDropHeaders, -1, len(included_headers)-1, arg_list=included_headers)
                         # print("col_number now",col_number)
@@ -367,9 +378,15 @@ def main():
                             excluded_headers.append(included_headers[col_number])
                             # print(f"excluded headers last: {excluded_headers[-1]}")
                             included_headers.remove(included_headers[col_number])
+                            print(f"\nColumn {col_number}:\n")
+                            print(excluded_headers[-1])
+                            input(f"\nwas successfully dropped. Press any key...")
+                            
                             # print("included_headers now***")
                             # print(included_headers)
-                            
+                        
+                        
+                          
                     print("Finished removing columns")
                     print(f"There are currently {len(excluded_headers)} items being excluded.")
                     input("press any key to continue...")
@@ -388,6 +405,8 @@ def main():
                     # TODO: function to retrieve all of the stats: describeColumn
                     #  - return dictionary of count, unique, mean, median, mode, stdev, variance, minimum, maximum
 
+                    datalst = data_frame[included_headers[col_number]].to_list()
+                    describeColumn(datalst)
                     
                     print(f"{included_headers[col_number]} stats:")
                     print("============================")

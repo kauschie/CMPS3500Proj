@@ -46,9 +46,9 @@
 
         - Count (function to count array elements) (David)
         - Unique Count (function is performed on an array) (David)
-        - Mean 
-        - Median
-        - Mode
+        - Mean (Samantha)
+        - Median (Samantha)
+        - Mode (Samantha)
         - Standard Deviation
         - Variance 
         - Minimum (Samantha)
