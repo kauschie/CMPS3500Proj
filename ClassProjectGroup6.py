@@ -18,6 +18,16 @@ import pandas as pd
 import time
 import os
 
+def clear():
+    if os.name == 'nt':
+        _ = os.system('cls')
+    else:
+        _ = os.system('clear')
+
+def getPrintColumns(dframe):
+    headers = list(dframe.columns)
+    print(headers)
+
 #Time to read and store data in an array
 
 def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
@@ -108,7 +118,8 @@ def getResponse(foo, min_val, max_val, **kwargs):
             response = int(str_response)
             
             if ((response < min_val) or (response > max_val)):
-                os.system('clear')
+                #os.system('clear')
+                clear()
                 if 'arg_list' in kwargs:
                     foo(kwargs.get('arg_list'))
                 else:
@@ -116,7 +127,8 @@ def getResponse(foo, min_val, max_val, **kwargs):
                 print(response, "is not in the range of acceptable values.")
                 print("Enter a value between", min_val, "and", max_val)
         except:
-            os.system('clear')
+            #os.system('clear')
+            clear()
             
             if 'arg_list' in kwargs:
                 foo(kwargs.get('arg_list'))
@@ -281,7 +293,8 @@ def main():
                     dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True)] #29
     
     while (menu_option != 5):
-        os.system("clear")
+        #os.system("clear")
+        clear()
         if (error_msg != ""):
             print(error_msg)
             error_msg = ""
@@ -292,7 +305,8 @@ def main():
         
         
         if (menu_option== 1):
-            os.system("clear")
+            #os.system("clear")
+            clear()
             menu_list = getCsvFileList()
             printDataSelectMenu(menu_list)
             sub_menu_option = getResponse(printDataSelectMenu, 1, len(menu_list), arg_list=menu_list)
@@ -323,7 +337,8 @@ def main():
             
         elif (menu_option == 2):
             # Explore Data
-            os.system("clear")
+            #os.system("clear")
+            clear()
             if (data_frame.empty):
                 error_msg = """You haven't loaded any data yet!
                 Select option 1 from the main menu"""
@@ -334,7 +349,8 @@ def main():
             print_msg = ""
             while (sub_menu_option != 26):
                 # get user input until correct
-                os.system("clear")
+                #os.system("clear")
+                clear()
                 if (print_msg != "" ):
                     print(print_msg)
                     print_msg = ""
@@ -344,7 +360,7 @@ def main():
 
                 if (sub_menu_option == 21):
                     # list all columns
-                    
+                    clear()
                     print("*****************")
                     print("*****************")
                     print("Included Columns:")
@@ -368,8 +384,9 @@ def main():
                     
                 elif (sub_menu_option == 22):
                     # Drop Columns
+                    #clear()
                     while (col_number != -1):
-                        os.system("clear")
+                        clear()
                         printDropHeaders(included_headers)
                         col_number = getResponse(printDropHeaders, -1, len(included_headers)-1, arg_list=included_headers)
                         # print("col_number now",col_number)
@@ -395,6 +412,7 @@ def main():
                 elif (sub_menu_option == 23):
                     # Desribe Columns
                     # input("describing the columns..")
+                    clear()
                     
                     printDescribeColMenu(included_headers)
                     col_number = getResponse(printDescribeColMenu, -1, len(included_headers)-1, arg_list=included_headers)
@@ -430,6 +448,7 @@ def main():
                 elif (sub_menu_option == 24):
                     # Search Element in Column
                     # input("searching the columns..")
+                    clear()
                     printSearchMenu(all_headers)
                     col_number = getResponse(printSearchMenu, -1, len(all_headers)-1, arg_list=all_headers)
                     if (col_number == -1):
@@ -461,7 +480,8 @@ def main():
                 elif (sub_menu_option == 25):
                     # add back a dropped column
                     # input("adding back a dropped column...")
-                     # Drop Columns
+                    # Drop Columns
+                    clear()
                      
                     if (len(excluded_headers) == 0):
                         print_msg = "There are currently 0 excluded columns so there's none to add back!"
@@ -513,6 +533,7 @@ def main():
                 error_msg = """You haven't loaded any data yet! 
                 Select option 1 from the main menu"""
                 continue
+            clear()
             num_rows = [100, 1000, 5000]
             printMenu()
             sub_menu_option = getResponse(printMenu, -1, 3)
@@ -531,10 +552,7 @@ def main():
             # data_frame.to_csv('output.csv',)
             
         
-
-
-
-
 if __name__ == '__main__':
-    os.system('clear')
+    #os.system('clear')
+    clear()
     main()
