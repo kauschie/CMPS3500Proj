@@ -86,4 +86,7 @@ Presentation
 [//]: # "https://www.markdownguide.org/cheat-sheet/"
 [//]: # "The above link goes to a markdown cheat-sheet for readme"
 
+- Questions
+    Show the top 5 areas with the most crime events in all years:
+        - What do we present here is for 5 for all years or is the top crime area for a single year.
 
