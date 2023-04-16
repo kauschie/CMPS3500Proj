@@ -20,6 +20,7 @@
 import pandas as pd
 import time
 import os
+import math
 
 def counts(data):
     count = 0
@@ -36,6 +37,40 @@ def uniqueCounts(data):
         if not pd.isna(unique) and unique not in unique_set:
             unique_set.add(unique)
     print("Unique: " , len(unique_set))
+
+# 
+# Standard Deviation and Variance 
+def stanDev(data):
+    # variables     
+    stand_diff = set();
+    mean = 0;
+    sum_sq = 0;
+    var = 0;
+    st_dev = 0;
+
+    # Step1: find the mean
+    for index in data:
+        mean += index
+    mean = round(mean / len(data))
+
+    # Step 2: find each deviation of the mean and square then add it to stand_diff list
+    for index in data:
+        stand_diff.add(math.pow((mean - index), 2))
+
+    # Step3: sum of the stand_diff
+    for sum_index in stand_diff:
+        sum_sq += sum_index
+
+    # Step 4: variance and sqrt to get stdev   
+    var = (round(sum_sq/ (len(data)-1),4))
+    st_dev = math.sqrt(var)
+
+    # print statements
+    print("Mean: ", mean)
+    print("STDEV: ", round(st_dev, 4))
+    print("Variance: ", var)
+    # had two functions but you need to find the variance to find the stdev, so just merged the
+    # two functions
 
 def maxFunc(data):
     #initialize max for string and int/float, plus dict.
@@ -254,12 +289,22 @@ def sortData(dframe, column_name):
     ''' method for sorting data frame data by passed in column_name'''
     pass
 
-def describeColumn(data_list):
+def describeColumn(data_list, col_number):
     # TODO
     counts(data_list)
     uniqueCounts(data_list)
     maxFunc(data_list)
     minFunc(data_list)
+
+    # only call STDEV and Variance when needed
+    if (col_number  == 4 or col_number==12 or 27 <= col_number <= 29  ):
+        stanDev(data_list);
+        # variance(data_list);
+    else:
+        print ("Standard Deviation: N/A")
+        print ("Variance: N/A")
+
+
     print(data_list)
     
     pass
@@ -594,7 +639,7 @@ def main():
                     #  - return dictionary of count, unique, mean, median, mode, stdev, variance, minimum, maximum
 
                     datalst = data_frame[included_headers[col_number]].to_list()
-                    describeColumn(datalst)
+                    describeColumn(datalst, col_number)
                     
                     print(f"{included_headers[col_number]} stats:")
                     print("============================")
