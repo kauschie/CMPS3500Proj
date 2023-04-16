@@ -1,10 +1,14 @@
 """
-NAMES: Irvin Neri, Michael Kausch
-ASGT: Class Project
-ORGN: CSUB - CMPS 3500
-FILE: ClassProjectGroup6.py
-DATE: 3/30/2023
-
+# course: CMPS3500
+# CLASS Project
+# PYTHON IMPLEMENTATION: BASIC DATA ANALYSIS
+# date: 3/30/23
+# Student 1: Michael Kausch
+# Student 2: David Mesa
+# Student 3: Irvin Neri Zavala
+# Student 4: Samantha Tellez
+# Student 5: Raul Verduzco Guillen
+# description: Implementation Basic Data Analysis Routines
 """
 
 # TODO:
@@ -32,6 +36,80 @@ def uniqueCounts(data):
         if not pd.isna(unique) and unique not in unique_set:
             unique_set.add(unique)
     print("Unique: " , len(unique_set))
+
+def maxFunc(data):
+    #initialize max for string and int/float, plus dict.
+    max_num = None
+    max_string = None
+    string_dict = {}
+
+    for temp in data:
+        #made a bool to determine if int/float being used
+        int_float = True
+        for char in str(temp):
+            if char not in ['-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                int_float = False
+                break
+        #ints/floats are dealt here
+        if int_float:
+            if max_num is None or temp > max_num:
+                max_num = temp
+        #strings are dealt here
+        #finding max # of instances
+        elif not int_float:
+            if temp in string_dict:
+                string_dict[temp] += 1
+            else:
+                string_dict[temp] = 1
+
+    #set count to 0
+    max_count = 0
+    for string, str_count in string_dict.items():
+        if str_count > max_count:
+            max_count = str_count
+            max_string = string
+
+    if max_num is not None:
+            print("Maximum: ", max_num)
+    else:
+            print("Maximum: ", max_string)
+
+def minFunc(data):
+    #initialize max for string and int/float, plus dict.
+    min_num = None
+    minstring = None
+    string_dict = {}
+
+    for temp in data:
+        #made a bool to determine if int/float being used
+        int_float = True
+        for char in str(temp):
+            if char not in ['-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                int_float = False
+                break
+        #ints/floats are dealt here
+        if int_float:
+            if min_num is None or temp < min_num:
+                min_num = temp
+        #strings are dealt here
+        #finding max # of instances
+        elif not int_float:
+            if temp in string_dict:
+                string_dict[temp] += 1
+            else:
+                string_dict[temp] = 1
+
+    #this count needs to be a big #
+    min_count = 1000000000
+    for string, str_count in string_dict.items():
+        if str_count < min_count:
+            min_count = str_count
+            min_string = string
+
+    if min_num is not None:
+        print("Minimum: ", min_num)
+    else:
+        print("Minimum: ", min_string)
 
 def totalUniqueCount(data):
     # create an empty dictionary to store unique crime counts per year
@@ -180,6 +258,8 @@ def describeColumn(data_list):
     # TODO
     counts(data_list)
     uniqueCounts(data_list)
+    maxFunc(data_list)
+    minFunc(data_list)
     print(data_list)
     
     pass
