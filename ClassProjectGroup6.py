@@ -157,20 +157,11 @@ def describeColumn(data_list):
     pass
 
 def printDataset(data_frame, num_rows):
-    data_frame.set_option('display.max_columns', None)
-    fout = open("dataout.txt", "a")
-    fout.write(f"\n\n")
-    fout.write("*********************************************")
-    fout.write("************ NEW DATA WRITTEN ***************")
-    fout.write(f"************ {datetime.now()}***************")
-    fout.write("*********************************************\n\n")
-    
-    
+    pd.set_option('display.max_columns', None)
     print(data_frame.iloc[:num_rows])
-    data_frame.reset_option("max_columns")
+    data_frame.iloc[:num_rows].to_csv("dataout.csv")
+    pd.reset_option("max_columns")
     
-
-
 def getResponse(foo, min_val, max_val, **kwargs):
     '''Takes in a print function (foo) and tests against minumum
         and maximum menu options.
@@ -628,8 +619,9 @@ def main():
             sub_menu_option = getResponse(printMenu, -1, 3)
             
             print(f"printing {num_rows[sub_menu_option]} number of rows...\n")
-            # printDataset(data_frame, num_rows) # TODO
+            printDataset(data_frame, num_rows[sub_menu_option]) # TODO
             print("done printing")
+            print("data also appended to dataout.txt")
             input("Press any key to continue...")
             
             # error_msg = "Print Data Section"
