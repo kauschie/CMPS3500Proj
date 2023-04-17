@@ -49,8 +49,8 @@
         - Mean (Samantha)
         - Median (Samantha)
         - Mode (Samantha)
-        - Standard Deviation (Raul)
-        - Variance (Raul)
+        - Standard Deviation (Raul) Done
+        - Variance (Raul) Done
         - Minimum (Samantha)
         - Maximum (Samantha)
 

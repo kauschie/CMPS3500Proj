@@ -1,10 +1,14 @@
 """
-NAMES: Irvin Neri, Michael Kausch
-ASGT: Class Project
-ORGN: CSUB - CMPS 3500
-FILE: ClassProjectGroup6.py
-DATE: 3/30/2023
-
+# course: CMPS3500
+# CLASS Project
+# PYTHON IMPLEMENTATION: BASIC DATA ANALYSIS
+# date: 3/30/23
+# Student 1: Michael Kausch
+# Student 2: David Mesa
+# Student 3: Irvin Neri Zavala
+# Student 4: Samantha Tellez
+# Student 5: Raul Verduzco Guillen
+# description: Implementation Basic Data Analysis Routines
 """
 
 # TODO:
@@ -16,6 +20,7 @@ DATE: 3/30/2023
 import pandas as pd
 import time
 import os
+import math
 
 def counts(data):
     count = 0
@@ -32,6 +37,114 @@ def uniqueCounts(data):
         if not pd.isna(unique) and unique not in unique_set:
             unique_set.add(unique)
     print("Unique: " , len(unique_set))
+
+# 
+# Standard Deviation and Variance 
+def stanDev(data):
+    # variables     
+    stand_diff = set();
+    mean = 0;
+    sum_sq = 0;
+    var = 0;
+    st_dev = 0;
+
+    # Step1: find the mean
+    for index in data:
+        mean += index
+    mean = round(mean / len(data))
+
+    # Step 2: find each deviation of the mean and square then add it to stand_diff list
+    for index in data:
+        stand_diff.add(math.pow((mean - index), 2))
+
+    # Step3: sum of the stand_diff
+    for sum_index in stand_diff:
+        sum_sq += sum_index
+
+    # Step 4: variance and sqrt to get stdev   
+    var = (round(sum_sq/ (len(data)-1),4))
+    st_dev = math.sqrt(var)
+
+    # print statements
+    print("Mean: ", mean)
+    print("STDEV: ", round(st_dev, 4))
+    print("Variance: ", var)
+    # had two functions but you need to find the variance to find the stdev, so just merged the
+    # two functions
+
+def maxFunc(data):
+    #initialize max for string and int/float, plus dict.
+    max_num = None
+    max_string = None
+    string_dict = {}
+
+    for temp in data:
+        #made a bool to determine if int/float being used
+        int_float = True
+        for char in str(temp):
+            if char not in ['-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                int_float = False
+                break
+        #ints/floats are dealt here
+        if int_float:
+            if max_num is None or temp > max_num:
+                max_num = temp
+        #strings are dealt here
+        #finding max # of instances
+        elif not int_float:
+            if temp in string_dict:
+                string_dict[temp] += 1
+            else:
+                string_dict[temp] = 1
+
+    #set count to 0
+    max_count = 0
+    for string, str_count in string_dict.items():
+        if str_count > max_count:
+            max_count = str_count
+            max_string = string
+
+    if max_num is not None:
+            print("Maximum: ", max_num)
+    else:
+            print("Maximum: ", max_string)
+
+def minFunc(data):
+    #initialize max for string and int/float, plus dict.
+    min_num = None
+    minstring = None
+    string_dict = {}
+
+    for temp in data:
+        #made a bool to determine if int/float being used
+        int_float = True
+        for char in str(temp):
+            if char not in ['-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+                int_float = False
+                break
+        #ints/floats are dealt here
+        if int_float:
+            if min_num is None or temp < min_num:
+                min_num = temp
+        #strings are dealt here
+        #finding max # of instances
+        elif not int_float:
+            if temp in string_dict:
+                string_dict[temp] += 1
+            else:
+                string_dict[temp] = 1
+
+    #this count needs to be a big #
+    min_count = 1000000000
+    for string, str_count in string_dict.items():
+        if str_count < min_count:
+            min_count = str_count
+            min_string = string
+
+    if min_num is not None:
+        print("Minimum: ", min_num)
+    else:
+        print("Minimum: ", min_string)
 
 def totalUniqueCount(data):
     # create an empty dictionary to store unique crime counts per year
@@ -176,10 +289,22 @@ def sortData(dframe, column_name):
     ''' method for sorting data frame data by passed in column_name'''
     pass
 
-def describeColumn(data_list):
+def describeColumn(data_list, col_number):
     # TODO
     counts(data_list)
     uniqueCounts(data_list)
+    maxFunc(data_list)
+    minFunc(data_list)
+
+    # only call STDEV and Variance when needed
+    if (col_number  == 4 or col_number==12 or 27 <= col_number <= 29  ):
+        stanDev(data_list);
+        # variance(data_list);
+    else:
+        print ("Standard Deviation: N/A")
+        print ("Variance: N/A")
+
+
     print(data_list)
     
     pass
@@ -514,7 +639,7 @@ def main():
                     #  - return dictionary of count, unique, mean, median, mode, stdev, variance, minimum, maximum
 
                     datalst = data_frame[included_headers[col_number]].to_list()
-                    describeColumn(datalst)
+                    describeColumn(datalst, col_number)
                     
                     print(f"{included_headers[col_number]} stats:")
                     print("============================")
