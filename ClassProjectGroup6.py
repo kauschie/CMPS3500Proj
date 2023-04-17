@@ -264,19 +264,19 @@ def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
     # print("Read time: ", (e_time-s_time), "\n")
     
   
-    # num_na = dict()
-    # num_duplicates = dict()
+    num_na = dict()
+    num_duplicates = dict()
     
-    # print("header  --  #NAN")
-    # for header in headers:
-    #     num_na[header] = csv_arr[header].isna().sum()
-    #     print(f"{header}: {num_na[header]}")
+    print("header  --  #NAN")
+    for header in headers:
+        num_na[header] = csv_arr[header].isna().sum()
+        print(f"{header}: {num_na[header]}")
         
-    # print(f"\n\nheader  --  #duplicates")
+    print(f"\n\nheader  --  #duplicates")
 
-    # for header in headers:
-    #     num_duplicates[header] = csv_arr.duplicated(subset=header).sum()
-    #     print(f"{header}: {num_duplicates[header]}")
+    for header in headers:
+        num_duplicates[header] = csv_arr.duplicated(subset=header).sum()
+        print(f"{header}: {num_duplicates[header]}")
     
     return(csv_arr)
 
@@ -311,7 +311,7 @@ def sortData(dframe, column_name):
     ''' method for sorting data frame data by passed in column_name'''
     pass
 
-# def sortData(dframe, column_name):
+    # def sortData(dframe, column_name):
 #     ''' method for sorting data frame data by passed in column_name'''
 #     heapSort()
 
@@ -360,20 +360,28 @@ def heapSort(lst):
     # search(data_frame, col_number, search_ele)
 
 
-def describeColumn(data_list, col_number):
+def describeColumn(data_list, col_number, data_bools):
     # TODO
     counts(data_list)
     uniqueCounts(data_list)
     maxFunc(data_list)
     minFunc(data_list)
 
-    # only call STDEV and Variance when needed
-    if (col_number  == 4 or col_number==12 or 27 <= col_number <= 29  ):
-        stanDev(data_list);
-        # variance(data_list);
+    # # only call STDEV and Variance when needed
+    # if (col_number  == 4 or col_number==12 or 27 <= col_number <= 29  ):
+    #     stanDev(data_list);
+    #     # variance(data_list);
+        
+        
+    if (data_bools[col_number]["stdev"] == True):
+        stanDev(data_list)
     else:
         print ("Standard Deviation: N/A")
-        print ("Variance: N/A")
+        
+    # if (data_bools[col_number]["var"] == True):
+    #     variance(data_list)
+    # else:
+    #     print ("Variance: N/A")
 
 
     print(data_list)
@@ -734,7 +742,7 @@ def main():
 
                     try:
                         s_time = time.time()
-                        describeColumn(datalst, col_number)
+                        describeColumn(datalst, col_number, data_bools)
                         #stats = describeColumn(data_frame, included_headers[col_number]) # TODO
                         e_time = time.time()
                         # printStats(stats) # TODO

@@ -54,7 +54,7 @@
         - Minimum (Samantha)
         - Maximum (Samantha)
 
-- Analysis
+- Analysis (David)
     - total unique count of crimes / year in descending
     - Show the top 5 areas (AREA NAME) with the mos crime events in all years (Sorted by year and number of crime events)
     - Show all months and the unique total count of crimes sorted in increasing order.
