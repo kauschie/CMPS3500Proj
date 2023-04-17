@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 
 NAMES: Irvin Neri, Michael Kausch
