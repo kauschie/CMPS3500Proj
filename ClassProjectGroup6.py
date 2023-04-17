@@ -67,45 +67,45 @@ def totalUniqueCount(data):
     for year, count in sorted_counts:
         print(f"{year}: {count} unique crimes")
 
-
 def countCrimesByArea(data):
-    # create an empty dictionary to store crime counts per area
-    count_by_area = {}
-
-    # loop through each crime data
+    # create a nested dictionary to store the count of each area name for each year
+    count_by_year_area = {}
     for index, row in data.iterrows():
-        # saves the area name and year into variables
+        year = row['year']
         area_name = row['AREA NAME']
-        year = int(row.year)
-        
-        # if the area is already in the dictionary, increment the count
-        if area_name in count_by_area:
-            # if the year is already in the area dictionary, increment the count
-            if year in count_by_area[area_name]:
-                count_by_area[area_name][year] += 1
-            # if the year is not in the area dictionary, add it with a count of 1
-            else:
-                count_by_area[area_name][year] = 1
-        # if the area is not in the dictionary, add it with a count of 1 for the current year
+        if year not in count_by_year_area:
+            count_by_year_area[year] = {}
+        if area_name not in count_by_year_area[year]:
+            count_by_year_area[year][area_name] = 1
         else:
-            count_by_area[area_name] = {year: 1}
-
-    # create a new dictionary to store the total crime counts by area, without considering the year
-    total_counts_by_area = {}
-
-    # loop through each area and year in the dictionary
-    for area_name, year_counts in count_by_area.items():
-        # compute the total number of crimes for the area
-        total_count = sum(year_counts.values())
+            count_by_year_area[year][area_name] += 1
+    
+    # create a list to store the top 5 areas for each year
+    top_5_areas = []
+    
+    # loop through each year
+    for year in count_by_year_area:
+        # create a list of tuples containing the area name and its count for the current year
+        areas_and_counts = []
+        for area_name, count in count_by_year_area[year].items():
+            areas_and_counts.append((area_name, count))
         
-        # add the total count to the new dictionary
-        total_counts_by_area[area_name] = total_count
-
-    # sort the dictionary by year and value in descending order and return it
-    sorted_counts = sorted(total_counts_by_area.items(), key=lambda x: (x[1], x[0]), reverse=True)
-    for area_name, count in sorted_counts[:5]:
-        print(f"{area_name}: {count} crimes")
-
+        # sort the list using a bubble sort algorithm
+        n = len(areas_and_counts)
+        for i in range(n):
+            for j in range(0, n-i-1):
+                if areas_and_counts[j][1] < areas_and_counts[j+1][1]:
+                    areas_and_counts[j], areas_and_counts[j+1] = areas_and_counts[j+1], areas_and_counts[j]
+        
+        # append the top 5 areas to the result list
+        top_5_areas.append((year, areas_and_counts[:5]))
+    
+    # print the result
+    for year, areas in top_5_areas:
+        print(f"{year}:")
+        for i, (area_name, count) in enumerate(areas):
+            print(f"{i+1}. {area_name}: {count} crimes")
+        print()
 
 def clear():
     if os.name == 'nt':
