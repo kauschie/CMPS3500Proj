@@ -311,6 +311,55 @@ def sortData(dframe, column_name):
     ''' method for sorting data frame data by passed in column_name'''
     pass
 
+# def sortData(dframe, column_name):
+#     ''' method for sorting data frame data by passed in column_name'''
+#     heapSort()
+
+def heapify(lst, i, upper):
+    while (True):
+        l, r = i*2+1, i*2+2
+
+        # 2 children
+        if (max(l,r) < upper):
+            if (lst[i] >= max(lst[l], lst[r])):
+                break
+            elif (lst[l] > lst[r]):
+                lst[l], lst[i] = lst[i], lst[l]
+                i = l
+            else:
+                lst[r], lst[i] = lst[i], lst[r]
+                i = r
+                
+        # 1 child
+        elif (l < upper):
+            if lst[l] > lst[i]:
+                lst[l], lst[i] = lst[i], lst[l]
+                i = l
+            else:
+                break
+        elif (r < upper):
+            if lst[r] > lst[i]:
+                lst[r], lst[i] = lst[i], lst[r]
+                i = r
+            else:
+                break
+        # no children
+        else:
+            break
+  
+# The main function to sort an array of given size
+  
+def heapSort(lst):
+    for itm in range(len(lst)-2//2, -1, -1):
+        heapify(lst, itm, len(lst))
+    
+    for end in range(len(lst)-1, 0, -1):
+        lst[0], lst[end] = lst[end], lst[0]
+        heapify(lst, 0, end)
+    
+    # search(data_frame, col_number, search_ele)
+
+
 def describeColumn(data_list, col_number):
     # TODO
     counts(data_list)
@@ -497,7 +546,7 @@ def main():
     # excluded_headers = []
     all_headers = []
     
-    data_bools = [dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #0
+    data_bools_unmod = [dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #0
                     dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #1
                     dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #2
                     dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #3
@@ -533,6 +582,8 @@ def main():
                     dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #27
                     dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #28
                     dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True)] #29
+    data_bools = data_bools_unmod.copy()
+    
     
     while (menu_option != 5):
         #os.system("clear")
@@ -564,6 +615,7 @@ def main():
                 print("[end time]", e_time)
                 print("Time to load:", (e_time-s_time),"sec.")
                 all_headers = list(data_frame.columns)
+                data_bools = data_bools_unmod.copy()
                 # included_headers = all_headers.copy() # save backup of all column names
                 # print("included headers:")
                 # print(included_headers)
@@ -648,6 +700,7 @@ def main():
                             data_frame.drop(columns = [all_headers[col_number]], inplace=True)
                             print(f"\nColumn {all_headers[col_number]}\n")
                             all_headers = list(data_frame.columns)
+                            data_bools.pop(col_number)
                             input(f"\nwas successfully dropped. Press any key...")
                             
                             # print("included_headers now***")
