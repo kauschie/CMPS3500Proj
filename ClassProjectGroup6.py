@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 # course: CMPS3500
 # CLASS Project
@@ -20,6 +21,7 @@
 import pandas as pd
 import time
 import os
+from datetime import datetime
 import math
 
 def counts(data):
@@ -253,9 +255,25 @@ def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
 
     Note: all null data points are set to NaN by default
     """
+    headers = list(csv_arr.columns)
+    
     # print("Read time: ", (e_time-s_time), "\n")
-    # print(csv_arr)
+    
+  
+    # num_na = dict()
+    # num_duplicates = dict()
+    
+    # print("header  --  #NAN")
+    # for header in headers:
+    #     num_na[header] = csv_arr[header].isna().sum()
+    #     print(f"{header}: {num_na[header]}")
+        
+    # print(f"\n\nheader  --  #duplicates")
 
+    # for header in headers:
+    #     num_duplicates[header] = csv_arr.duplicated(subset=header).sum()
+    #     print(f"{header}: {num_duplicates[header]}")
+    
     return(csv_arr)
 
 
@@ -309,7 +327,12 @@ def describeColumn(data_list, col_number):
     
     pass
 
-
+def printDataset(data_frame, num_rows):
+    pd.set_option('display.max_columns', None)
+    print(data_frame.iloc[:num_rows])
+    data_frame.iloc[:num_rows].to_csv("dataout.csv")
+    pd.reset_option("max_columns")
+    
 def getResponse(foo, min_val, max_val, **kwargs):
     '''Takes in a print function (foo) and tests against minumum
         and maximum menu options.
@@ -391,19 +414,19 @@ def printDataExpMenu():
     print("22. Drop Columns:")
     print("23. Describe Columns:")
     print("24. Search Element in Column:")
-    print("25. Add Back a Dropped Column:")
-    print("26. Back to the Main Menu")
+    # print("25. Add Back a Dropped Column:")
+    print("25. Back to the Main Menu")
         
 
-def printDropHeaders(excl_header_list):
-    printHeaders(excl_header_list)
+def printDropHeaders(header_list):
+    printHeaders(header_list)
     print("Enter a column number to drop")
     print("Enter -1 to finish entering columns")
     
-def printInclHeaders(incl_header_list):
-    printHeaders(incl_header_list)
-    print("Enter a column number to add")
-    print("Enter -1 to finish entering columns")    
+# def printInclHeaders(incl_header_list):
+#     printHeaders(incl_header_list)
+#     print("Enter a column number to add")
+#     print("Enter -1 to finish entering columns")    
    
 def printHeaders(header_list):
     for i in range(len(header_list)):
@@ -415,7 +438,7 @@ def printDescribeColMenu(incl_header_list):
     print("*****************")
     printHeaders(incl_header_list)
     print("Enter the column number to desribe")
-    print("Enter -1 to finish entering columns")    
+    # print("Enter -1 to finish entering columns")    
     
 def printSearchMenu(header_list):
     print("Search Element in Column:")
@@ -466,8 +489,8 @@ def main():
     menu_option = None
     data_frame = pd.DataFrame()
     error_msg = ""
-    included_headers = []
-    excluded_headers = []
+    # included_headers = []
+    # excluded_headers = []
     all_headers = []
     
     data_bools = [dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #0
@@ -536,8 +559,8 @@ def main():
                 print("[start time]", s_time)
                 print("[end time]", e_time)
                 print("Time to load:", (e_time-s_time),"sec.")
-                included_headers = list(data_frame.columns)
-                all_headers = included_headers.copy() # save backup of all column names
+                all_headers = list(data_frame.columns)
+                # included_headers = all_headers.copy() # save backup of all column names
                 # print("included headers:")
                 # print(included_headers)
                 print(f"\nTotal Columns Read: {len(all_headers)}")
@@ -562,7 +585,7 @@ def main():
             # print("Data Exploration Section")
             sub_menu_option = 0
             print_msg = ""
-            while (sub_menu_option != 26):
+            while (sub_menu_option != 25):
                 # get user input until correct
                 #os.system("clear")
                 clear()
@@ -570,30 +593,36 @@ def main():
                     print(print_msg)
                     print_msg = ""
                 printDataExpMenu()
-                sub_menu_option = getResponse(printDataExpMenu, 21, 26)
+                sub_menu_option = getResponse(printDataExpMenu, 21, 25)
                 col_number = 0
 
                 if (sub_menu_option == 21):
                     # list all columns
                     clear()
                     print("*****************")
+                    print(f"Data Columns:\n")
                     print("*****************")
-                    print("Included Columns:")
-                    print("*****************")
-                    if (len(included_headers) > 0):
-                        printHeaders(included_headers)
-                    else:
-                        print("No columns are currently included")
+                    printHeaders(all_headers)
                     print("*****************")
                     print("*****************")
-                    print("Excluded Columns:")
-                    print("*****************")
-                    if (len(excluded_headers) > 0):
-                        printHeaders(excluded_headers)
-                    else:
-                        print("No columns are currently excluded")
-                    print("*****************")
-                    print("*****************")
+                    # print("*****************")
+                    # print("*****************")
+                    # print("Included Columns:")
+                    # print("*****************")
+                    # if (len(included_headers) > 0):
+                    #     printHeaders(included_headers)
+                    # else:
+                    #     print("No columns are currently included")
+                    # print("*****************")
+                    # print("*****************")
+                    # print("Excluded Columns:")
+                    # print("*****************")
+                    # if (len(excluded_headers) > 0):
+                    #     printHeaders(excluded_headers)
+                    # else:
+                    #     print("No columns are currently excluded")
+                    # print("*****************")
+                    # print("*****************")
                     input(f"\npress enter to continue...")
                     continue
                     
@@ -602,25 +631,28 @@ def main():
                     #clear()
                     while (col_number != -1):
                         clear()
-                        printDropHeaders(included_headers)
-                        col_number = getResponse(printDropHeaders, -1, len(included_headers)-1, arg_list=included_headers)
+                        
+                        
+                        printDropHeaders(all_headers)
+                        col_number = getResponse(printDropHeaders, -1, len(all_headers)-1, arg_list=all_headers)
                         # print("col_number now",col_number)
                         
                         if (col_number != -1):
-                            excluded_headers.append(included_headers[col_number])
+                            # excluded_headers.append(included_headers[col_number])
                             # print(f"excluded headers last: {excluded_headers[-1]}")
-                            included_headers.remove(included_headers[col_number])
-                            print(f"\nColumn {col_number}:\n")
-                            print(excluded_headers[-1])
+                            # included_headers.remove(included_headers[col_number])
+                            data_frame.drop(columns = [all_headers[col_number]], inplace=True)
+                            print(f"\nColumn {all_headers[col_number]}\n")
+                            all_headers = list(data_frame.columns)
                             input(f"\nwas successfully dropped. Press any key...")
                             
                             # print("included_headers now***")
-                            # print(included_headers)
+                            # print(all_headers)
                         
                         
                           
                     print("Finished removing columns")
-                    print(f"There are currently {len(excluded_headers)} items being excluded.")
+                    print(f"There are currently {len(all_headers)} columns of data included.")
                     input("press any key to continue...")
                     col_number = 0
                     
@@ -629,8 +661,8 @@ def main():
                     # input("describing the columns..")
                     clear()
                     
-                    printDescribeColMenu(included_headers)
-                    col_number = getResponse(printDescribeColMenu, -1, len(included_headers)-1, arg_list=included_headers)
+                    printDescribeColMenu(all_headers)
+                    col_number = getResponse(printDescribeColMenu, -1, len(all_headers)-1, arg_list=all_headers)
                     if (col_number == -1):
                         col_number = 0
                         continue
@@ -638,10 +670,10 @@ def main():
                     # TODO: function to retrieve all of the stats: describeColumn
                     #  - return dictionary of count, unique, mean, median, mode, stdev, variance, minimum, maximum
 
-                    datalst = data_frame[included_headers[col_number]].to_list()
-                    describeColumn(datalst, col_number)
+                    datalst = data_frame[all_headers[col_number]].to_list()
+                    describeColumn(datalst)
                     
-                    print(f"{included_headers[col_number]} stats:")
+                    print(f"{all_headers[col_number]} stats:")
                     print("============================")
 
                     try:
@@ -679,6 +711,10 @@ def main():
                     s_time = time.time()
                     # should return a bool
                     # is_found = search(data_frame, col_number, search_ele) # TODO: search function
+                    
+                    datalst = data_frame[all_headers[col_number]].to_list()
+
+                    
                     e_time = time.time()
                     
                     
@@ -692,35 +728,35 @@ def main():
                     input("Press any key to continue")
                     continue
                     
-                elif (sub_menu_option == 25):
-                    # add back a dropped column
-                    # input("adding back a dropped column...")
-                    # Drop Columns
-                    clear()
+                # elif (sub_menu_option == 25):
+                #     # add back a dropped column
+                #     # input("adding back a dropped column...")
+                #     # Drop Columns
+                #     clear()
                      
-                    if (len(excluded_headers) == 0):
-                        print_msg = "There are currently 0 excluded columns so there's none to add back!"
-                        continue
+                #     if (len(excluded_headers) == 0):
+                #         print_msg = "There are currently 0 excluded columns so there's none to add back!"
+                #         continue
                      
-                    while (col_number != -1):
-                        printInclHeaders(excluded_headers)
-                        col_number = getResponse(printInclHeaders, -1, len(excluded_headers)-1, arg_list=excluded_headers)
-                        # print("col_number now",col_number)
+                #     while (col_number != -1):
+                #         printInclHeaders(excluded_headers)
+                #         col_number = getResponse(printInclHeaders, -1, len(excluded_headers)-1, arg_list=excluded_headers)
+                #         # print("col_number now",col_number)
                         
-                        if (col_number != -1):
+                #         if (col_number != -1):
                             
-                            included_headers.append(excluded_headers[col_number])
-                            # print(f"included headers last: {included_headers[-1]}")
-                            excluded_headers.remove(excluded_headers[col_number])
-                            # print("excluded_headers now***")
-                            # print(excluded_headers)
+                #             included_headers.append(excluded_headers[col_number])
+                #             # print(f"included headers last: {included_headers[-1]}")
+                #             excluded_headers.remove(excluded_headers[col_number])
+                #             # print("excluded_headers now***")
+                #             # print(excluded_headers)
                             
-                    print("Finished adding back columns")
-                    print(f"There are currently {len(excluded_headers)} items still being excluded.")
-                    col_number = 0
-                    input("press any key to continue...")
+                #     print("Finished adding back columns")
+                #     print(f"There are currently {len(excluded_headers)} items still being excluded.")
+                #     col_number = 0
+                #     input("press any key to continue...")
                     
-                elif (sub_menu_option == 26):
+                elif (sub_menu_option == 25):
                     # back to the main menu
                     input("Back to the main menu...")
                     
@@ -754,8 +790,9 @@ def main():
             sub_menu_option = getResponse(printMenu, -1, 3)
             
             print(f"printing {num_rows[sub_menu_option]} number of rows...\n")
-            # printDataset(data_frame, num_rows) # TODO
+            printDataset(data_frame, num_rows[sub_menu_option]) # TODO
             print("done printing")
+            print("data also appended to dataout.txt")
             input("Press any key to continue...")
             
             # error_msg = "Print Data Section"
