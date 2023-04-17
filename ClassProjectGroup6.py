@@ -257,6 +257,10 @@ def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
     """
     headers = list(csv_arr.columns)
     
+    result = csv_arr.dtypes
+    for i in range(len(headers)):
+        print(f"{headers[i]}: {result[i]}")
+    
     # print("Read time: ", (e_time-s_time), "\n")
     
   
@@ -671,13 +675,13 @@ def main():
                     #  - return dictionary of count, unique, mean, median, mode, stdev, variance, minimum, maximum
 
                     datalst = data_frame[all_headers[col_number]].to_list()
-                    describeColumn(datalst)
-                    
                     print(f"{all_headers[col_number]} stats:")
                     print("============================")
+                    
 
                     try:
                         s_time = time.time()
+                        describeColumn(datalst, col_number)
                         #stats = describeColumn(data_frame, included_headers[col_number]) # TODO
                         e_time = time.time()
                         # printStats(stats) # TODO
