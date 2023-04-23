@@ -147,6 +147,128 @@ def minFunc(data):
     else:
         print("Minimum: ", min_string)
 
+def medianFunc(data):
+    # make list for int, float, str, and date str
+    int_list = []
+    float_list = []
+    str_list = []
+    date_str_list = []
+    
+    # separate the ints/floats together
+    # and the date str and other strings separately
+    for temp in data:
+        if isinstance(temp, int):
+            int_list.append(temp)
+        elif isinstance(temp, float):
+            float_list.append(temp)
+        elif isinstance(temp, str):
+            try:
+                datetime.strptime(temp, '%m/%d/%Y %I:%M:%S %p')
+                date_str_list.append(temp)
+            except ValueError:
+                str_list.append(temp)
+
+    # sort int and float numerically
+    int_list.sort()
+    float_list.sort()
+
+    # sort string alphabetically and date str chronologically using datetime
+    str_list.sort()
+    date_str_list.sort(key=lambda s: datetime.strptime(s, '%m/%d/%Y %I:%M:%S %p'))
+
+    # merge them all together
+    merged_list = int_list + float_list + str_list + date_str_list
+
+    # used to see if sorted correctly
+    #print(merged_list)
+
+    # find median
+    length_list = len(merged_list)
+    if length_list % 2 == 0:
+        # when there is more then one median, chose median that is "smaller"
+        temp1 = length_list // 2
+        temp2 = temp1 - 1
+        if isinstance(merged_list[temp1], str):
+            median = sorted([merged_list[temp1], merged_list[temp2]])[0]
+        else:
+            median = (merged_list[temp1] + merged_list[temp2]) / 2
+            # if float ends in .0, change to int
+            if median.is_integer():
+                median = int(median)
+    else:
+        # output median if there's only one
+        tmp = length_list // 2
+        median = merged_list[tmp]
+
+    print("Median: ", median)
+
+def modeFunc(data):
+    # make list for int, float, str, and date str
+    int_list = []
+    float_list = []
+    str_list = []
+    date_str_list = []
+    
+    # separate the ints/floats together
+    # and the date str and other strings separately
+    for temp in data:
+        if isinstance(temp, int):
+            int_list.append(temp)
+        elif isinstance(temp, float):
+            float_list.append(temp)
+        elif isinstance(temp, str):
+            try:
+                datetime.strptime(temp, '%m/%d/%Y %I:%M:%S %p')
+                date_str_list.append(temp)
+            except ValueError:
+                str_list.append(temp)
+
+    # sort int and float numerically
+    int_list.sort()
+    float_list.sort()
+
+    # sort string alphabetically and date str chronologically
+    str_list.sort()
+    date_str_list.sort(key=lambda s: datetime.strptime(s, '%m/%d/%Y %I:%M:%S %p'))
+
+    # merge them all together
+    merged_list = int_list + float_list + str_list + date_str_list
+    
+    # used to see if sorted correctly
+    #print(merged_list)
+
+    # find mode
+    count_dict = {}
+    for cnt in merged_list:
+        if cnt in count_dict:
+            count_dict[cnt] += 1
+        else:
+            count_dict[cnt] = 1
+
+    max_count = 0
+    modes = []
+    for itm, count in count_dict.items():
+        if count > max_count:
+            max_count = count
+            modes = [itm]
+        elif count == max_count:
+            modes.append(itm)
+
+    # for multiple ints, floats, strings, and dates choose smaller
+    mode = modes[0]
+    for multi in modes:
+        if isinstance(multi, (int, float)):
+            if multi < mode:
+                mode = multi
+        elif isinstance(multi, str):
+            if multi < mode:
+                mode = multi
+        elif isinstance(multi, datetime):
+            if multi < mode:
+                mode = multi
+
+    print("Mode: ", mode)
+
 def totalUniqueCountt(data):
     nonp = time.time()
     
@@ -381,27 +503,44 @@ def describeColumn(data_list, col_number, data_bools):
     # TODO
     counts(data_list)
     uniqueCounts(data_list)
-    maxFunc(data_list)
-    minFunc(data_list)
 
     # # only call STDEV and Variance when needed
     # if (col_number  == 4 or col_number==12 or 27 <= col_number <= 29  ):
     #     stanDev(data_list);
     #     # variance(data_list);
         
+    if (data_bools[col_number]["median"] == True):
+        medianFunc(data_list)
+    else:
+        print("Median: N/A") 
         
+    if (data_bools[col_number]["mode"] == True):
+        modeFunc(data_list)
+    else:
+        print("Mode: N/A")
+
     if (data_bools[col_number]["stdev"] == True):
         stanDev(data_list)
     else:
         print ("Standard Deviation: N/A")
-        
+       
+    if (data_bools[col_number]["min"] == True):
+        minFunc(data_list)
+    else:
+        print("Minimum: N/A")
+
+    if (data_bools[col_number]["max"] == True):
+        maxFunc(data_list)
+    else:
+        print("Maximum: N/A")
+
     # if (data_bools[col_number]["var"] == True):
     #     variance(data_list)
     # else:
     #     print ("Variance: N/A")
 
 
-    print(data_list)
+   # print(data_list)
     
     pass
 
