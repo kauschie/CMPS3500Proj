@@ -40,7 +40,6 @@ def uniqueCounts(data):
             unique_set.add(unique)
     print("Unique: " , len(unique_set))
 
-# 
 # Standard Deviation and Variance 
 def stanDev(data):
     # variables     
@@ -148,7 +147,9 @@ def minFunc(data):
     else:
         print("Minimum: ", min_string)
 
-def totalUniqueCount(data):
+def totalUniqueCountt(data):
+    nonp = time.time()
+    
     # create an empty dictionary to store unique crime counts per year
     count_by_year = {}
 
@@ -181,9 +182,24 @@ def totalUniqueCount(data):
     sorted_counts = sorted(unique_counts_by_year.items(), key=lambda x: x[0], reverse=True)
     for year, count in sorted_counts:
         print(f"{year}: {count} unique crimes")
+    nonpend = time.time()
+    print("time:", (nonpend - nonp,"sec."))
+
+def totalUniqueCount(filename):
+    pandbegin = time.time()
+    # group data by year and count unique crimes
+    counts_by_year = filename.groupby('year')['Crm Cd'].nunique()
+    
+    # sort the counts in descending order and return them
+    sorted_counts = sorted(counts_by_year.items(), key=lambda x: x[0], reverse=True)
+    for year, count in sorted_counts:
+        print("Year {}: Total Unique Crimes {}".format(year, count))
+    pandtimeend = time.time()
+    print("pandas time:", (pandtimeend - pandbegin),"sec.")
 
 def countCrimesByArea(data):
     # create a nested dictionary to store the count of each area name for each year
+    nonp = time.time()
     count_by_year_area = {}
     for index, row in data.iterrows():
         year = row['year']
@@ -221,7 +237,8 @@ def countCrimesByArea(data):
         for i, (area_name, count) in enumerate(areas):
             print(f"{i+1}. {area_name}: {count} crimes")
         print()
-
+    nonpend = time.time()
+    print("time:", (nonpend - nonp,"sec."))
 def clear():
     if os.name == 'nt':
         _ = os.system('cls')
@@ -514,6 +531,7 @@ def printDataAnalysis(df):
     print("***************")
     print("Show the total unique count of crimes per year sorted in descending order:")
     totalUniqueCount(df)
+    totalUniqueCountt(df)
     print(f"\nShow the top 5 areas with the most crime events in all years:")
     countCrimesByArea(df)
     print("\nShow all months and the unique total count of crimes sorted in increasing order.")
