@@ -23,6 +23,7 @@ import time
 import os
 from datetime import datetime
 import math
+import re
 
 def counts(data):
     count = 0
@@ -43,11 +44,11 @@ def uniqueCounts(data):
 # Standard Deviation and Variance 
 def stanDev(data):
     # variables     
-    stand_diff = set();
-    mean = 0;
-    sum_sq = 0;
-    var = 0;
-    st_dev = 0;
+    stand_diff = set()
+    mean = 0
+    sum_sq = 0
+    var = 0
+    st_dev = 0
 
     # Step1: find the mean
     for index in data:
@@ -709,6 +710,24 @@ def getResponse(foo, min_val, max_val, **kwargs):
             response = -2
         
     return response
+
+
+# searches a specified data_frame column for a user inputed string/integer
+def search(data_frame, col_num, search_string):
+    row_match = []
+    found = False
+    col_name = data_frame.columns[col_num]
+    
+    for index, row in data_frame.iterrows():
+        if(re.search(search_string, str(row[col_name]), re.IGNORECASE)):
+            row_match.append(index)
+        
+    if len(row_match) != 0:
+        found = True
+        print(data_frame.loc[row_match])
+            
+            
+    return found
             
 def printBaseMenu():
     print("Main Menu:")
@@ -1041,11 +1060,12 @@ def main():
                     
                     # TODO: Need to make 1:1 list of variable type so that I can 
                     #       check and see if the correct element was input
+                    
 
                     is_found = False
                     s_time = time.time()
                     # should return a bool
-                    # is_found = search(data_frame, col_number, search_ele) # TODO: search function
+                    is_found = search(data_frame, col_number, search_ele) # TODO: search function
                     
                     datalst = data_frame[all_headers[col_number]].to_list()
 
