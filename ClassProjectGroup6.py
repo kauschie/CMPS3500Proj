@@ -489,7 +489,79 @@ def getPrintColumns(dframe):
 
 def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
     # s_time = time.time()
-    csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True)    
+    csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True, dtype = {"Date Rptd":"string", "year": "int32"} )
+    csv_arr.drop('Unnamed: 0', axis= 1, inplace = True)
+    
+    headers = list(csv_arr.columns)
+    #rows = df.index.values
+    result = csv_arr.dtypes
+
+    print(f"[{len(csv_arr)} rows x {len(headers)} columns]")
+    print("#     Column    \tNon-null\tDtype")
+    print("---   ----------\t-----------\t------")
+
+    num_na = dict()
+    num_duplicates = dict()
+    num_na_list = []
+
+
+    for header in headers:
+        num_na[header] = csv_arr[header].isna().sum()
+        #print(f"{header}: {num_na[header]}")
+    for ind in num_na.keys():                                                          # add the sum of Na of each header to a list to print later
+        num_na_list.append(num_na[ind])
+
+    for header in headers:
+        num_duplicates[header] = csv_arr.duplicated(subset=header).sum()
+        #print(f"{header}: {num_duplicates[header]}") 
+
+    for i in range(len(headers)):                                                       # print table of the loaded data
+        #print(f"{i}\t{headers[i]}\t\t{num_na_list[i]}\t{result[i]}")
+        print('%-5s'%i, '%-20s'%headers[i], '%-12s'%(len(csv_arr) - num_na_list[i]), '%-15s'%result[i])
+
+    # declare each types to find the sum of each
+    float_sum = 0
+    int_sum = 0
+    int32_sum = 0
+    object_sum = 0
+    string_sum = 0
+
+    # loop through and count each type
+    for i in range(len(headers)):
+            if result[i] == "float64":
+                float_sum += 1
+            elif result[i] == "int64":
+                int_sum += 1
+            elif result[i] == "int32":
+                int32_sum += 1
+            #elif result[i] == "string":
+                #print(result[i])
+                #print("test")
+                #string_sum += 1
+                #print("test")
+            elif result[i] == "object":
+                object_sum += 1
+    # print the sum of each type from the data            
+    print(f"dtypes: float64({float_sum}),  int32({int32_sum}),  int64({int_sum}),  object({object_sum}), string({string_sum})")
+    print(f"Memory Usage:     \n")
+
+    # print("Read time: ", (e_time-s_time), "\n")
+    #csv_arr.drop(csv_arr.columns[[28,22]], axis=1, inplace=True)
+
+    #for i in range(len(headers)):
+    #    if num_na_list[i] >> 0:
+    #        print(i)
+    #        csv_arr = csv_arr.drop(csv_arr.columns[[i]], axis= 1, inplace= True)
+     # dropping columns Crm Cd 2,Crm Cd 3, Crm Cd 4, Cross Street due to having a high rate of null values
+    #csv_arr.drop(['Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4', 'Cross Street'], axis= 1, inplace= True)
+    #csv_arr = csv_arr.drop_duplicates(subset='Cm Cd 1', keep="first")
+    #csv_arr.drop_duplicantsi
+
+    return(csv_arr)
+
+
+    # s_time = time.time()
+    #csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True)    
     # e_time = time.time()
     """
     If you want to access elements of csv_array or want to see the whole array use the following:
@@ -508,30 +580,30 @@ def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
 
     Note: all null data points are set to NaN by default
     """
-    headers = list(csv_arr.columns)
+    #headers = list(csv_arr.columns)
     
-    result = csv_arr.dtypes
-    for i in range(len(headers)):
-        print(f"{headers[i]}: {result[i]}")
+    #result = csv_arr.dtypes
+    #for i in range(len(headers)):
+    #    print(f"{headers[i]}: {result[i]}")
     
     # print("Read time: ", (e_time-s_time), "\n")
     
   
-    num_na = dict()
-    num_duplicates = dict()
+    #num_na = dict()
+    #num_duplicates = dict()
     
-    print("header  --  #NAN")
-    for header in headers:
-        num_na[header] = csv_arr[header].isna().sum()
-        print(f"{header}: {num_na[header]}")
+    #print("header  --  #NAN")
+    #for header in headers:
+    #    num_na[header] = csv_arr[header].isna().sum()
+    #    print(f"{header}: {num_na[header]}")
         
-    print(f"\n\nheader  --  #duplicates")
+    #print(f"\n\nheader  --  #duplicates")
 
-    for header in headers:
-        num_duplicates[header] = csv_arr.duplicated(subset=header).sum()
-        print(f"{header}: {num_duplicates[header]}")
+    #for header in headers:
+    #    num_duplicates[header] = csv_arr.duplicated(subset=header).sum()
+    #    print(f"{header}: {num_duplicates[header]}")
     
-    return(csv_arr)
+    #return(csv_arr)
 
 
 '''Gets a list of csv files in the current working directory'''
@@ -637,6 +709,7 @@ def describeColumn(data_list, col_number, data_bools):
         stanDev(data_list)
     else:
         print ("Standard Deviation: N/A")
+        print ("Variance: N/A")
        
     if (data_bools[col_number]["min"] == True):
         minFunc(data_list)
