@@ -734,8 +734,13 @@ def describeColumn(data_list, col_number, data_bools):
 def printDataset(data_frame, num_rows):
     pd.set_option('display.max_columns', None)
     print(data_frame.iloc[:num_rows])
-    data_frame.iloc[:num_rows].to_csv("dataout.csv")
+    
+    date_time = datetime.now()
+    dts = date_time.strftime("%y%m%d%H%M%S_data_print.csv")
+    print("Data was written to ((", dts, "))")
+    data_frame.iloc[:num_rows].to_csv(dts)
     pd.reset_option("max_columns")
+    
     
 def getResponse(foo, min_val, max_val, **kwargs):
     '''Takes in a print function (foo) and tests against minumum
@@ -1219,8 +1224,8 @@ def main():
             
             print(f"printing {num_rows[sub_menu_option]} number of rows...\n")
             printDataset(data_frame, num_rows[sub_menu_option]) # TODO
-            print("done printing")
-            print("data also appended to dataout.txt")
+            # print("done printing")
+            # print("data also appended to dataout.txt")
             input("Press any key to continue...")
             
             # error_msg = "Print Data Section"
