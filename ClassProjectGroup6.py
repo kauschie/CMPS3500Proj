@@ -1152,7 +1152,7 @@ def main():
                     
                     
                     if (is_found):
-                        print("stats printed successfully!")
+                        print("Data found!")
                         print("Time to process is", (e_time-s_time),"sec.")
                     else:
                         print(f"could not locate (({search_ele})) in the data")
