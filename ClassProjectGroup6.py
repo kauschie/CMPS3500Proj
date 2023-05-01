@@ -108,8 +108,10 @@ def maxFunc(data):
 
     if max_num is not None:
             print("Maximum: ", max_num)
+            return max_num
     else:
             print("Maximum: ", max_string)
+            return max_string
 
 def minFunc(data):
     #initialize max for string and int/float, plus dict.
@@ -145,8 +147,10 @@ def minFunc(data):
 
     if min_num is not None:
         print("Minimum: ", min_num)
+        return min_num
     else:
         print("Minimum: ", min_string)
+        return min_string
 
 
 def medianFunc(data):
@@ -762,7 +766,7 @@ def getResponse(foo, min_val, max_val, **kwargs):
         # foo()
         
         try:
-            str_response = input("Enter your choice: ")
+            str_response = input("Enter your response: ")
             response = int(str_response)
             
             if ((response < min_val) or (response > max_val)):
@@ -851,6 +855,16 @@ def printDropHeaders(header_list):
     print("Enter a column number to drop")
     print("Enter -1 to finish entering columns")
     
+
+def printDayPrompt():
+    print("What day do you want to search?")
+
+def printMonthPrompt():
+    print("What month do you want to search? ")
+    
+def printYearPrompt():
+    print("What year do you want to search?")
+    
 # def printInclHeaders(incl_header_list):
 #     printHeaders(incl_header_list)
 #     print("Enter a column number to add")
@@ -921,6 +935,7 @@ def main():
     # included_headers = []
     # excluded_headers = []
     all_headers = []
+    data_frame_bak = None
     
     data_bools_unmod = [dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #0
                     dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #1
@@ -985,7 +1000,7 @@ def main():
             try:
                 s_time = time.time()
                 data_frame = readFile(menu_list[sub_menu_option-1])
-                data_frame
+                data_frame_bak = data_frame.copy()
                 e_time = time.time()
                 print("[start time]", s_time)
                 print("[end time]", e_time)
@@ -1131,11 +1146,50 @@ def main():
                     clear()
                     printSearchMenu(all_headers)
                     col_number = getResponse(printSearchMenu, -1, len(all_headers)-1, arg_list=all_headers)
+                    month = 0
+                    day = 0
+                    year = 0
+                    year_list = data_frame_bak['year'].to_list()
+                    min_year = int(minFunc(year_list))
+                    max_year = int(maxFunc(year_list))
+                    max_day = None
+                    search_ele = None
+                    # print("min_year:", min_year, "max_year:", max_year)
+                    # input("enter anything")
+                    
+                    
                     if (col_number == -1):
                         col_number = 0
                         continue
                     
-                    search_ele = input("Enter the search value: ")
+                    if (all_headers[col_number] == 'Date Rptd' or all_headers[col_number] == 'DATE OCC'):
+                        # print ("we're looking at a date here mike")
+                        printYearPrompt()
+                        year = getResponse(printYearPrompt, min_year, max_year)
+                        printMonthPrompt()
+                        month = getResponse(printMonthPrompt, 1, 12)
+                        months_31 = [1, 3, 5, 7, 8, 10, 12]
+                        months_30 = [4, 6, 9, 11]
+                        if (month in months_31):
+                            # print("month had 31 days")
+                            max_day = 31
+                        elif (month in months_30):
+                            # print("month had 30 days")
+                            max_day = 30
+                        else:
+                            print("month was february")
+                            max_day = 29
+                        printDayPrompt()
+                        day = getResponse(printDayPrompt,1, max_day)
+                        
+                        m_str = str(month).rjust(2, '0')
+                        d_str = str(day).rjust(2, '0')
+                        print("searching the following string...")
+                        # print(m_str + '/' + d_str + '/' + str(year))
+                        search_ele = str(m_str + '/' + d_str + '/' + str(year))
+                        print(search_ele)
+                    else:
+                        search_ele = input("Enter the search value: ")
                     
                     # TODO: Need to make 1:1 list of variable type so that I can 
                     #       check and see if the correct element was input
