@@ -490,7 +490,8 @@ def getPrintColumns(dframe):
 def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
     # s_time = time.time()
     csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True, dtype = {"Date Rptd":"string", "year": "int32"} )
-    csv_arr.drop('Unnamed: 0', axis= 1, inplace = True)
+    drop_columns = ['Unnamed: 0', 'Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4', 'Cross Street']
+    csv_arr.drop(drop_columns, axis= 1, inplace = True)
     
     headers = list(csv_arr.columns)
     #rows = df.index.values
