@@ -700,6 +700,13 @@ def describeColumn(data_list, col_number, data_bools):
     #     stanDev(data_list);
     #     # variance(data_list);
         
+    if (data_bools[col_number]["mean"] == True):
+        stanDev(data_list)
+    else:
+        print("Mean: N/A")
+        print ("STDEV: N/A")
+        print ("Variance: N/A")
+        
     if (data_bools[col_number]["median"] == True):
         medianFunc(data_list)
     else:
@@ -710,11 +717,11 @@ def describeColumn(data_list, col_number, data_bools):
     else:
         print("Mode: N/A")
 
-    if (data_bools[col_number]["stdev"] == True):
-        stanDev(data_list)
-    else:
-        print ("Standard Deviation: N/A")
-        print ("Variance: N/A")
+    # if (data_bools[col_number]["stdev"] == True):
+    #     stanDev(data_list)
+    # else:
+    #     print ("Standard Deviation: N/A")
+    #     print ("Variance: N/A")
        
     if (data_bools[col_number]["min"] == True):
         minFunc(data_list)
@@ -937,7 +944,8 @@ def main():
     all_headers = []
     data_frame_bak = None
     
-    data_bools_unmod = [dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #0
+    data_bools_unmod = [
+                    # dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #0
                     dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #1
                     dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #2
                     dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #3
@@ -964,11 +972,11 @@ def main():
                     dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #19
                     dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #20
                     dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #21
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #22
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #23
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #24
+                    # dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #22
+                    # dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #23
+                    # dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #24
                     dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #25
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #26
+                    # dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #26
                     
                     dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #27
                     dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #28
@@ -1118,14 +1126,33 @@ def main():
                     # TODO: function to retrieve all of the stats: describeColumn
                     #  - return dictionary of count, unique, mean, median, mode, stdev, variance, minimum, maximum
 
-                    datalst = data_frame[all_headers[col_number]].to_list()
+                    # datalst = data_frame[all_headers[col_number]].to_list()
+                    
+                    clean_df = data_frame.dropna(axis = 'index', subset = all_headers[col_number])
+                    
+                    # clean out 0.0's from lat and long columns
+                    if (all_headers[col_number] == 'LAT' or all_headers[col_number] == 'LON'):
+                        clean_df = clean_df[clean_df[all_headers[col_number]] != 0]
+                        
+                    if (all_headers[col_number] == 'Vict Age'):
+                        clean_df = clean_df[clean_df[all_headers[col_number]] > 0]
+                        # print("should have cleaned neg values from vic age")
+                    
+                    clean_lst = clean_df[all_headers[col_number]].to_list()
+                    
+                    # fin = open("log.log", "w")
+                    # for val in clean_lst:
+                    #     # print(val)
+                    #     fin.write(str(val) + '\n')
+                    # fin.close()
                     print(f"{all_headers[col_number]} stats:")
                     print("============================")
                     
 
                     try:
                         s_time = time.time()
-                        describeColumn(datalst, col_number, data_bools)
+                        # describeColumn(datalst, col_number, data_bools)
+                        describeColumn(clean_lst, col_number, data_bools)
                         #stats = describeColumn(data_frame, included_headers[col_number]) # TODO
                         e_time = time.time()
                         # printStats(stats) # TODO
@@ -1149,10 +1176,10 @@ def main():
                     month = 0
                     day = 0
                     year = 0
-                    year_list = data_frame_bak['year'].to_list()
-                    min_year = int(minFunc(year_list))
-                    max_year = int(maxFunc(year_list))
-                    max_day = None
+                    # year_list = data_frame_bak['year'].to_list()
+                    # min_year = int(minFunc(year_list))
+                    # max_year = int(maxFunc(year_list))
+                    # max_day = None
                     search_ele = None
                     # print("min_year:", min_year, "max_year:", max_year)
                     # input("enter anything")
@@ -1165,22 +1192,22 @@ def main():
                     if (all_headers[col_number] == 'Date Rptd' or all_headers[col_number] == 'DATE OCC'):
                         # print ("we're looking at a date here mike")
                         printYearPrompt()
-                        year = getResponse(printYearPrompt, min_year, max_year)
+                        year = getResponse(printYearPrompt, 1900, 2023)
                         printMonthPrompt()
                         month = getResponse(printMonthPrompt, 1, 12)
-                        months_31 = [1, 3, 5, 7, 8, 10, 12]
-                        months_30 = [4, 6, 9, 11]
-                        if (month in months_31):
-                            # print("month had 31 days")
-                            max_day = 31
-                        elif (month in months_30):
-                            # print("month had 30 days")
-                            max_day = 30
-                        else:
-                            print("month was february")
-                            max_day = 29
+                        # months_31 = [1, 3, 5, 7, 8, 10, 12]
+                        # months_30 = [4, 6, 9, 11]
+                        # if (month in months_31):
+                        #     # print("month had 31 days")
+                        #     max_day = 31
+                        # elif (month in months_30):
+                        #     # print("month had 30 days")
+                        #     max_day = 30
+                        # else:
+                        #     print("month was february")
+                        #     max_day = 29
                         printDayPrompt()
-                        day = getResponse(printDayPrompt,1, max_day)
+                        day = getResponse(printDayPrompt,1, 31)
                         
                         m_str = str(month).rjust(2, '0')
                         d_str = str(day).rjust(2, '0')
@@ -1262,7 +1289,7 @@ def main():
                 Select option 1 from the main menu"""
                 continue
             
-            printDataAnalysis(data_frame)
+            printDataAnalysis(data_frame_bak)
             
             input("Press any key to continue...")
             continue
