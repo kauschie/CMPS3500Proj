@@ -75,83 +75,122 @@ def stanDev(data):
     # two functions
 
 def maxFunc(data):
-    #initialize max for string and int/float, plus dict.
-    max_num = None
-    max_string = None
-    string_dict = {}
+    # make individ lists
+    int_lst = []
+    flt_lst = []
+    str_lst = []
+    date_str_lst = []
 
+    # separate ints and floats / date str and str
     for temp in data:
-        #made a bool to determine if int/float being used
-        int_float = True
-        for char in str(temp):
-            if char not in ['-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-                int_float = False
-                break
-        #ints/floats are dealt here
-        if int_float:
-            if max_num is None or temp > max_num:
-                max_num = temp
-        #strings are dealt here
-        #finding max # of instances
-        elif not int_float:
-            if temp in string_dict:
-                string_dict[temp] += 1
-            else:
-                string_dict[temp] = 1
+        if isinstance(temp, int):
+            int_lst.append(temp)
+        elif isinstance(temp, float):
+            flt_lst.append(temp)
+        elif isinstance(temp, str):
+            try:
+                datetime.strptime(temp, '%m/%d/%Y %I:%M:%S %p')
+                date_str_lst.append(temp)
+            except ValueError:
+                str_lst.append(temp)
 
-    #set count to 0
-    max_count = 0
-    for string, str_count in string_dict.items():
-        if str_count > max_count:
-            max_count = str_count
-            max_string = string
+    # find max int
+    max_num = None
+    if int_lst:
+        max_num = int_lst[0]
+        for i in range(1, len(int_lst)):
+            if int_lst[i] > max_num:
+                max_num = int_lst[i]
 
-    if max_num is not None:
-            print("Maximum: ", max_num)
-            return max_num
+    # find max flt
+    if flt_lst:
+        if max_num is None or flt_lst[0] > max_num:
+            max_num = flt_lst[0]
+        for i in range(1, len(flt_lst)):
+            if flt_lst[i] > max_num:
+                max_num = flt_lst[i]
+
+    # find max str
+    max_str = None
+    if str_lst:
+        max_str = str_lst[0]
+        for i in range(1, len(str_lst)):
+            if str_lst[i] > max_str:
+                max_str = str_lst[i]
+
+    # find max date
+    max_date_str = None
+    if date_str_lst:
+        max_date_str = date_str_lst[0]
+        for i in range(1, len(date_str_lst)):
+            if datetime.strptime(date_str_lst[i], '%m/%d/%Y %I:%M:%S %p') > datetime.strptime(max_date_str, '%m/%d/%Y %I:%M:%S %p'):
+                max_date_str = date_str_lst[i]
+
+    if max_str is not None:
+        print("Maximum: ", max_str)
+    elif max_num is not None:
+        print("Maximum: ", max_num)
     else:
-            print("Maximum: ", max_string)
-            return max_string
+        print("Maximum: ", max_date_str)
 
 def minFunc(data):
-    #initialize max for string and int/float, plus dict.
-    min_num = None
-    minstring = None
-    string_dict = {}
+    # make individ lists
+    int_lst = []
+    flt_lst = []
+    str_lst = []
+    date_str_lst = []
 
+    # separate ints and floats / date str and str
     for temp in data:
-        #made a bool to determine if int/float being used
-        int_float = True
-        for char in str(temp):
-            if char not in ['-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-                int_float = False
-                break
-        #ints/floats are dealt here
-        if int_float:
-            if min_num is None or temp < min_num:
-                min_num = temp
-        #strings are dealt here
-        #finding max # of instances
-        elif not int_float:
-            if temp in string_dict:
-                string_dict[temp] += 1
-            else:
-                string_dict[temp] = 1
+        if isinstance(temp, int):
+            int_lst.append(temp)
+        elif isinstance(temp, float):
+            flt_lst.append(temp)
+        elif isinstance(temp, str):
+            try:
+                datetime.strptime(temp, '%m/%d/%Y %I:%M:%S %p')
+                date_str_lst.append(temp)
+            except ValueError:
+                str_lst.append(temp)
 
-    #this count needs to be a big #
-    min_count = 1000000000
-    for string, str_count in string_dict.items():
-        if str_count < min_count:
-            min_count = str_count
-            min_string = string
+    # find max int
+    min_num = None
+    if int_lst:
+        min_num = int_lst[0]
+        for i in range(1, len(int_lst)):
+            if int_lst[i] < min_num:
+                min_num = int_lst[i]
 
-    if min_num is not None:
+    # find max flt
+    if flt_lst:
+        if min_num is None or flt_lst[0] < min_num:
+            min_num = flt_lst[0]
+        for i in range(1, len(flt_lst)):
+            if flt_lst[i] < min_num:
+                min_num = flt_lst[i]
+
+    # find max str
+    min_str = None
+    if str_lst:
+        min_str = str_lst[0]
+        for i in range(1, len(str_lst)):
+            if str_lst[i] < min_str:
+                min_str = str_lst[i]
+
+    # find max date
+    min_date_str = None
+    if date_str_lst:
+        min_date_str = date_str_lst[0]
+        for i in range(1, len(date_str_lst)):
+            if datetime.strptime(date_str_lst[i], '%m/%d/%Y %I:%M:%S %p') < datetime.strptime(min_date_str, '%m/%d/%Y %I:%M:%S %p'):
+                min_date_str = date_str_lst[i]
+
+    if min_str is not None:
+        print("Minimum: ", min_str)
+    elif min_num is not None:
         print("Minimum: ", min_num)
-        return min_num
     else:
-        print("Minimum: ", min_string)
-        return min_string
-
+        print("Minimum: ", min_date_str)
 
 def medianFunc(data):
     # make list for int, float, str, and date str
