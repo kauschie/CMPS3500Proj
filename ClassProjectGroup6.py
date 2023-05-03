@@ -33,12 +33,24 @@ def counts(data):
     print("Count: " ,  count)
 
 def uniqueCounts(data):
-
+    # isDate = True
     unique_set = set()
     # loop through data and store if was not previously found
     for unique in data:
-        if not pd.isna(unique) and unique not in unique_set:
-            unique_set.add(unique)
+        if not pd.isna(unique):
+            if isinstance(unique, str):
+                try:
+                    datetime.strptime(unique, '%m/%d/%Y %I:%M:%S %p')
+                    # date_str_lst.append(temp)
+                except ValueError:
+                    # str_lst.append(temp)
+                    print(unique, "not a date")
+
+            if unique not in unique_set:
+                unique_set.add(unique)
+            
+        # if not pd.isna(unique) and unique not in unique_set:
+        #     unique_set.add(unique)
     print("Unique: " , len(unique_set))
 
 # Standard Deviation and Variance 
@@ -731,6 +743,7 @@ def heapSort(lst):
 
 def describeColumn(data_list, col_number, data_bools):
     # TODO
+    
     counts(data_list)
     uniqueCounts(data_list)
 
@@ -1167,7 +1180,7 @@ def main():
 
                     # datalst = data_frame[all_headers[col_number]].to_list()
                     
-                    clean_df = data_frame.dropna(axis = 'index', subset = all_headers[col_number])
+                    clean_df = data_frame.dropna(axis = 'index', subset = [all_headers[col_number]])
                     
                     # clean out 0.0's from lat and long columns
                     if (all_headers[col_number] == 'LAT' or all_headers[col_number] == 'LON'):
