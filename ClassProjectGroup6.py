@@ -30,7 +30,8 @@ def counts(data):
     # loop through data add one per row in data
     for row in data:
         count += 1
-    print("Count: " ,  count)
+    # print("Count: " ,  count)
+    return count
 
 def uniqueCounts(data):
     # isDate = True
@@ -44,47 +45,61 @@ def uniqueCounts(data):
                     # date_str_lst.append(temp)
                 except ValueError:
                     # str_lst.append(temp)
-                    print(unique, "not a date")
+                    # print(unique, "not a date")
+                    pass
 
             if unique not in unique_set:
                 unique_set.add(unique)
+                # print(unique, "being added")
             
         # if not pd.isna(unique) and unique not in unique_set:
         #     unique_set.add(unique)
-    print("Unique: " , len(unique_set))
+    # print("Unique: " , len(unique_set))
+    return len(unique_set)
 
 # Standard Deviation and Variance 
 def stanDev(data):
-    # variables     
+    # variables
+    
+    # print("about to make stats dict")  
+    stats = {'mean': 0, 'var': 0, 'st_dev': 0}
+    # print("done making stats dict")
     stand_diff = set()
-    mean = 0
+    # stats['mean'] = 0
     sum_sq = 0
-    var = 0
-    st_dev = 0
+    # stats['var'] = 0
+    # stats['st_dev'] = 0
 
-    # Step1: find the mean
-    for index in data:
-        mean += index
-    mean = round(mean / len(data))
 
-    # Step 2: find each deviation of the mean and square then add it to stand_diff list
+    # Step1: find the stats['mean']
+    # print("getting mean")
     for index in data:
-        stand_diff.add(math.pow((mean - index), 2))
+        stats['mean'] += index
+    stats['mean'] = round(stats['mean'] / len(data))
+
+    # Step 2: find each deviation of the stats['mean'] and square then add it to stand_diff list
+    # print("getting stand_diff")
+    for index in data:
+        stand_diff.add(math.pow((stats['mean'] - index), 2))
 
     # Step3: sum of the stand_diff
+    # print("getting sum_sq")
     for sum_index in stand_diff:
         sum_sq += sum_index
 
-    # Step 4: variance and sqrt to get stdev   
-    var = (round(sum_sq/ (len(data)-1),4))
-    st_dev = math.sqrt(var)
+    # Step 4: variance and sqrt to get stdev  
+    # print("calculating variance")
+    stats['var'] = (round(sum_sq/ (len(data)-1),4))
+    # print("calculating st_dev")
+    stats['st_dev'] = math.sqrt(stats['var'])
 
     # print statements
-    print("Mean: ", mean)
-    print("STDEV: ", round(st_dev, 4))
-    print("Variance: ", var)
+    # print("Mean: ", stats['mean'])
+    # print("STDEV: ", round(stats['st_dev'], 4))
+    # print("Variance: ", stats['var'])
     # had two functions but you need to find the variance to find the stdev, so just merged the
     # two functions
+    return stats
 
 def maxFunc(data):
     # make individ lists
@@ -144,6 +159,20 @@ def maxFunc(data):
         print("Maximum: ", max_num)
     else:
         print("Maximum: ", max_date_str)
+
+def medianFunc2(data):
+    '''Takes in a sorted list and returns middle value'''
+    mid = int((len(data)/2))
+    # print("mid is", mid)
+    return data[mid]
+
+def minFunc2(data):
+    '''data: a list sorted in ascending order'''
+    return data[0]
+
+def maxFunc2(data):
+    '''data: a list sorted in ascending order'''
+    return data[-1]
 
 def minFunc(data):
     # make individ lists
@@ -259,6 +288,18 @@ def medianFunc(data):
 
     print("Median: ", median)
 
+def modeFunc2(sorted_list):
+    '''takes in a sorted list of data in its correct format'''
+    data = dict()
+    for item in sorted_list:
+        data[item] = data.get(item,0) + 1
+        # print(item, ":", data[item])
+    
+    sorted_data = sorted([(v,k) for (k,v) in data.items()], reverse=True)
+    # print("mode is:", sorted_data[0][1])
+    return sorted_data[0][1]    
+    
+
 def modeFunc(data):
     # make list for int, float, str, and date str
     int_list = []
@@ -325,6 +366,7 @@ def modeFunc(data):
                 mode = multi
 
     print("Mode: ", mode)
+    return mode
 
 ################################## BEGINNING OF DATA ANALYSIS ##################################
 # def totalUniqueCountt(data):
@@ -748,6 +790,69 @@ def heapSort(lst):
         heapify(lst, 0, end)
     
     # search(data_frame, col_number, search_ele)
+
+def describeColumn2(clean_sorted_lst, col_number, data_bools):
+    # print("in describecolumn2")
+    total = counts(clean_sorted_lst)
+    unique = uniqueCounts(clean_sorted_lst)
+    if (data_bools[col_number]["mean"] == True):
+        # print("getting standev")
+        mvs = stanDev(clean_sorted_lst)
+    else:
+        mvs = None
+    if (data_bools[col_number]["median"] == True):
+        # print("getting median")
+        med = medianFunc2(clean_sorted_lst)
+    else:
+        med = None
+    if (data_bools[col_number]["mode"] == True):
+        # print("getting mode")
+        mode = modeFunc2(clean_sorted_lst)
+    else:
+        mode = None
+    if (data_bools[col_number]["min"] == True):
+        # print("getting min")
+        min = minFunc2(clean_sorted_lst)
+    else:
+        min = None
+    if (data_bools[col_number]["max"] == True):
+        # print("getting max")
+        max = maxFunc2(clean_sorted_lst)
+    else:
+        max = None
+        
+   
+    print("Count:", total)
+    print("Unique:", unique)
+    
+    if (mvs is not None):
+        print("Mean:", mvs['mean'])
+    else:
+        print("Mean: N/A")
+    if (med is not None):
+        print("Median:", med)
+    else:
+        print("Median: N/A")
+    if (mode is not None):
+        print("Mode", mode)
+    else:
+        print("Mode: N/A")
+    if (min is not None):
+        print("Minimum:", min)
+    else:
+        print("Minimum: N/A")
+    if (max is not None):
+        print("Maximum:", max)
+    else:
+        print("Maximum: N/A")
+    if (mvs is not None):
+        print("STDEV: ", mvs['st_dev'])
+        print("Variance: ", mvs['var'])
+    else:
+        print ("STDEV: N/A")
+        print ("Variance: N/A")
+    
+    
 
 
 def describeColumn(data_list, col_number, data_bools):
@@ -1202,31 +1307,51 @@ def main():
 
                     # datalst = data_frame[all_headers[col_number]].to_list()
                     
+                    print("cleaning data...")
                     clean_df = data_frame.dropna(axis = 'index', subset = [all_headers[col_number]])
                     
                     # clean out 0.0's from lat and long columns
                     if (all_headers[col_number] == 'LAT' or all_headers[col_number] == 'LON'):
                         clean_df = clean_df[clean_df[all_headers[col_number]] != 0]
                         
-                    if (all_headers[col_number] == 'Vict Age'):
+                    elif (all_headers[col_number] == 'Vict Age'):
                         clean_df = clean_df[clean_df[all_headers[col_number]] > 0]
+                        clean_df = clean_df[clean_df[all_headers[col_number]] != 118]
                         # print("should have cleaned neg values from vic age")
                     
-                    clean_lst = clean_df[all_headers[col_number]].to_list()
+                    elif (all_headers[col_number] == 'Vict Sex'):
+                        clean_df = clean_df[clean_df[all_headers[col_number]] != 'X']
+                        clean_df = clean_df[clean_df[all_headers[col_number]] != 'N']
+                        
+                    elif (all_headers[col_number] == 'Vict Descent'):
+                        clean_df = clean_df[clean_df[all_headers[col_number]] != '-']
+                         
+                    elif (all_headers[col_number] == 'Date Rptd' or all_headers[col_number] == 'DATE OCC'):
+                        # clean_df = pd.to_datetime(clean_df[all_headers[col_number]], format='%m/%d/%Y %I:%M:%S %p')
+                        clean_df[all_headers[col_number]] = pd.to_datetime(clean_df[all_headers[col_number]], format="%m/%d/%Y %I:%M:%S %p")
+                        # print("made the clean df yo")
                     
+                    clean_lst = clean_df[all_headers[col_number]].to_list()
+                    # print("made the clean list")
+                    clean_sorted_lst = sorted(clean_lst)
+                    # print("made the clean sorted list")
                     # fin = open("log.log", "w")
                     # for val in clean_lst:
                     #     # print(val)
                     #     fin.write(str(val) + '\n')
                     # fin.close()
+                    
+                    print("done cleaning data...")
+                    
                     print(f"{all_headers[col_number]} stats:")
                     print("============================")
                     
 
                     try:
                         s_time = time.time()
+                        describeColumn2(clean_sorted_lst, col_number, data_bools)
                         # describeColumn(datalst, col_number, data_bools)
-                        describeColumn(clean_lst, col_number, data_bools)
+                        # describeColumn(clean_lst, col_number, data_bools)
                         #stats = describeColumn(data_frame, included_headers[col_number]) # TODO
                         e_time = time.time()
                         # printStats(stats) # TODO
@@ -1334,8 +1459,21 @@ def main():
                         except:
                             print("couldn't format",all_headers[col_number],"as a date")
                             print("attempting to sort without converting...")
+                    
+                        # split the Mocodes
+                    
                     clean_lst = clean_df[all_headers[col_number]].to_list()
-                
+                    
+                    if (all_headers[col_number] == 'Mocodes'):
+                        new_lst = list()
+                        for codes in clean_lst:
+                            sub_codes = codes.split()
+                            for code in sub_codes:
+                                new_lst.append(code)
+                    
+                        clean_lst = new_lst       
+                            
+                    
                     sortData(clean_lst, sort_type)
                     print(clean_lst)
                     input("Press any key to continue")
