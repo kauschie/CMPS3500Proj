@@ -688,9 +688,18 @@ def getCsvFileList():
     return files
 
 
-def sortData(dframe, column_name):
-    ''' method for sorting data frame data by passed in column_name'''
-    pass
+def sortData(lst, format):
+    ''' method for sorting data frame data by passed in column_name
+        lst             Data list to sort
+        format = 1      Ascending
+        format = 2      Descending'''
+    if (format == 1):
+        heapSort(lst)
+    elif (format == 2):
+        heapSort(lst)
+        lst.reverse()
+    else:
+        print("bad arg", format, "passed to sortData")
 
     # def sortData(dframe, column_name):
 #     ''' method for sorting data frame data by passed in column_name'''
@@ -905,8 +914,8 @@ def printDataExpMenu():
     print("22. Drop Columns:")
     print("23. Describe Columns:")
     print("24. Search Element in Column:")
-    # print("25. Add Back a Dropped Column:")
-    print("25. Back to the Main Menu")
+    print("25. Sort by Column:")
+    print("26. Back to the Main Menu")
         
 
 def printDropHeaders(header_list):
@@ -948,7 +957,20 @@ def printSearchMenu(header_list):
         print(f"[{i}] {header_list[i]}")   
     print("Select the column number to perform a search")
     print("Enter -1 to finish entering columns")
-
+    
+def printSortMenu(header_list):
+    print("Sort Data Column:")
+    print("**************************")
+    for i in range(len(header_list)):
+        print(f"[{i}] {header_list[i]}")   
+    print("Select the column number to sort")
+    print("Enter -1 to return to the previous menu")
+    
+def printAscDescMenu():
+    print("Select Ascending or Descending")
+    print("[1] Ascending")
+    print("[2] Descending")
+    
 def printDataAnalysis(df):
     print("Data Analysis:")
     print("***************")
@@ -1092,7 +1114,7 @@ def main():
             # print("Data Exploration Section")
             sub_menu_option = 0
             print_msg = ""
-            while (sub_menu_option != 25):
+            while (sub_menu_option != 26):
                 # get user input until correct
                 #os.system("clear")
                 clear()
@@ -1100,7 +1122,7 @@ def main():
                     print(print_msg)
                     print_msg = ""
                 printDataExpMenu()
-                sub_menu_option = getResponse(printDataExpMenu, 21, 25)
+                sub_menu_option = getResponse(printDataExpMenu, 21, 26)
                 col_number = 0
 
                 if (sub_menu_option == 21):
@@ -1294,6 +1316,32 @@ def main():
                     
                     input("Press any key to continue")
                     continue
+                
+                elif (sub_menu_option == 25):
+                    clear()
+                    printSortMenu(all_headers)
+                    col_number = getResponse(printSortMenu, -1, len(all_headers)-1, arg_list=all_headers)
+                    if (col_number == -1):
+                        continue
+                    printAscDescMenu()
+                    sort_type = getResponse(printAscDescMenu, 1, 2)
+                    
+                    clean_df = data_frame.dropna(axis = 'index', subset = [all_headers[col_number]])
+                    
+                    if (all_headers[col_number] == 'DATE OCC' or all_headers[col_number] == 'Date Rptd'):
+                        try:
+                            clean_df[all_headers[col_number]] = pd.to_datetime(clean_df[all_headers[col_number]], format="%m/%d/%Y %I:%M:%S %p")
+                        except:
+                            print("couldn't format",all_headers[col_number],"as a date")
+                            print("attempting to sort without converting...")
+                    clean_lst = clean_df[all_headers[col_number]].to_list()
+                
+                    sortData(clean_lst, sort_type)
+                    print(clean_lst)
+                    input("Press any key to continue")
+                    continue
+                    
+                    
                     
                 # elif (sub_menu_option == 25):
                 #     # add back a dropped column
@@ -1323,7 +1371,7 @@ def main():
                 #     col_number = 0
                 #     input("press any key to continue...")
                     
-                elif (sub_menu_option == 25):
+                elif (sub_menu_option == 26):
                     # back to the main menu
                     input("Back to the main menu...")
                     
