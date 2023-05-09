@@ -738,14 +738,36 @@ def sortData(lst, format):
     if (format == 1):
         heapSort(lst)
     elif (format == 2):
-        heapSort(lst)
-        lst.reverse()
+        minHeapSort(lst, len(lst))
+        # lst.reverse()
     else:
         print("bad arg", format, "passed to sortData")
 
     # def sortData(dframe, column_name):
 #     ''' method for sorting data frame data by passed in column_name'''
 #     heapSort()
+
+
+def minHeapify(lst, n, i):
+    smallest = i    #initialize smallest as root
+    l = 2 * i + 1 # left child
+    r = 2 * i + 2 # right child
+
+    #check left child is smaller
+    if l < n and lst[l] < lst[smallest]:
+        smallest = l
+    
+    # check if right child is smaller
+    if r < n and lst[r] < lst[smallest]:
+        smallest = r
+    
+    # swap if smallest is not root
+    if smallest != i:
+        (lst[i], lst[smallest]) = (lst[smallest], lst[i])
+        # recursively minheapify the subtree
+        minHeapify(lst, n, smallest)
+    
+
 
 def heapify(lst, i, upper):
     while (True):
@@ -791,33 +813,41 @@ def heapSort(lst):
     
     # search(data_frame, col_number, search_ele)
 
+def minHeapSort(lst, n):
+    for i in range(int(n/2) -1, -1, -1):
+        minHeapify(lst, n, i)
+        
+    for i in range(n-1, -1, -1):
+        lst[0], lst[i] = lst[i], lst[0]
+        minHeapify(lst, i, 0)
+
 def describeColumn2(clean_sorted_lst, col_number, data_bools, **kwargs):
     # print("in describecolumn2")
        
     total = counts(clean_sorted_lst)
     unique = uniqueCounts(clean_sorted_lst)
     if (data_bools[col_number]["mean"] == True):
-        print("getting standev")
+        # print("getting standev")
         mvs = stanDev(clean_sorted_lst)
     else:
         mvs = None
     if (data_bools[col_number]["median"] == True):
-        print("getting median")
+        # print("getting median")
         med = medianFunc2(clean_sorted_lst)
     else:
         med = None
     if (data_bools[col_number]["mode"] == True):
-        print("getting mode")
+        # print("getting mode")
         mode = modeFunc2(clean_sorted_lst)
     else:
         mode = None
     if (data_bools[col_number]["min"] == True):
-        print("getting min")
+        # print("getting min")
         min = minFunc2(clean_sorted_lst)
     else:
         min = None
     if (data_bools[col_number]["max"] == True):
-        print("getting max")
+        # print("getting max")
         max = maxFunc2(clean_sorted_lst)
     else:
         max = None
@@ -837,7 +867,8 @@ def describeColumn2(clean_sorted_lst, col_number, data_bools, **kwargs):
     
     
     if 'dtype' in kwargs:
-        print("date passed in")
+        # print("date passed in")
+        
         
         d = pd.to_datetime("2010-01-01") + pd.DateOffset(days=mvs['mean'])
         print("Mean:", d.strftime("%m/%d/%Y"))
