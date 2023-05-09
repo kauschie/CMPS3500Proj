@@ -791,32 +791,33 @@ def heapSort(lst):
     
     # search(data_frame, col_number, search_ele)
 
-def describeColumn2(clean_sorted_lst, col_number, data_bools):
+def describeColumn2(clean_sorted_lst, col_number, data_bools, **kwargs):
     # print("in describecolumn2")
+       
     total = counts(clean_sorted_lst)
     unique = uniqueCounts(clean_sorted_lst)
     if (data_bools[col_number]["mean"] == True):
-        # print("getting standev")
+        print("getting standev")
         mvs = stanDev(clean_sorted_lst)
     else:
         mvs = None
     if (data_bools[col_number]["median"] == True):
-        # print("getting median")
+        print("getting median")
         med = medianFunc2(clean_sorted_lst)
     else:
         med = None
     if (data_bools[col_number]["mode"] == True):
-        # print("getting mode")
+        print("getting mode")
         mode = modeFunc2(clean_sorted_lst)
     else:
         mode = None
     if (data_bools[col_number]["min"] == True):
-        # print("getting min")
+        print("getting min")
         min = minFunc2(clean_sorted_lst)
     else:
         min = None
     if (data_bools[col_number]["max"] == True):
-        # print("getting max")
+        print("getting max")
         max = maxFunc2(clean_sorted_lst)
     else:
         max = None
@@ -825,32 +826,64 @@ def describeColumn2(clean_sorted_lst, col_number, data_bools):
     print("Count:", total)
     print("Unique:", unique)
     
-    if (mvs is not None):
-        print("Mean:", mvs['mean'])
+    
+    
+        # if 'dframe' in kwargs:
+    #     df = kwargs.get('dframe')
+    #     print("made it here")
+    #     df['days'] = pd.to_datetime(df[kwargs.get('cname')]).sub(pd.Timestamp('2010-01-01')).dt.days
+    #     print(df['days'])
+    #     clean_sorted_lst =     
+    
+    
+    if 'dtype' in kwargs:
+        print("date passed in")
+        
+        d = pd.to_datetime("2010-01-01") + pd.DateOffset(days=mvs['mean'])
+        print("Mean:", d.strftime("%m/%d/%Y"))
+        
+        d = pd.to_datetime("2010-01-01") + pd.DateOffset(days=med)
+        print("Median:", d.strftime("%m/%d/%Y"))
+        
+        d = pd.to_datetime("2010-01-01") + pd.DateOffset(days=mode)
+        print("Mode", d.strftime("%m/%d/%Y"))
+        
+        d = pd.to_datetime("2010-01-01") + pd.DateOffset(days=min)
+        print("Minimum:", d.strftime("%m/%d/%Y"))
+        
+        d = pd.to_datetime("2010-01-01") + pd.DateOffset(days=max)
+        print("Maximum:", d.strftime("%m/%d/%Y"))
+        
+        print("STDEV: ", mvs['st_dev'], "days")
+        print("Variance: ", mvs['var'], "days squared")
+
     else:
-        print("Mean: N/A")
-    if (med is not None):
-        print("Median:", med)
-    else:
-        print("Median: N/A")
-    if (mode is not None):
-        print("Mode", mode)
-    else:
-        print("Mode: N/A")
-    if (min is not None):
-        print("Minimum:", min)
-    else:
-        print("Minimum: N/A")
-    if (max is not None):
-        print("Maximum:", max)
-    else:
-        print("Maximum: N/A")
-    if (mvs is not None):
-        print("STDEV: ", mvs['st_dev'])
-        print("Variance: ", mvs['var'])
-    else:
-        print ("STDEV: N/A")
-        print ("Variance: N/A")
+        if (mvs is not None):
+            print("Mean:", mvs['mean'])
+        else:
+            print("Mean: N/A")
+        if (med is not None):
+            print("Median:", med)
+        else:
+            print("Median: N/A")
+        if (mode is not None):
+            print("Mode", mode)
+        else:
+            print("Mode: N/A")
+        if (min is not None):
+            print("Minimum:", min)
+        else:
+            print("Minimum: N/A")
+        if (max is not None):
+            print("Maximum:", max)
+        else:
+            print("Maximum: N/A")
+        if (mvs is not None):
+            print("STDEV: ", mvs['st_dev'])
+            print("Variance: ", mvs['var'])
+        else:
+            print ("STDEV: N/A")
+            print ("Variance: N/A")
     
     
 
@@ -1126,8 +1159,8 @@ def main():
     data_bools_unmod = [
                     # dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #0
                     dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #1
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #2
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #3
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #2
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #3
                     
                     dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #4
                     
@@ -1330,6 +1363,8 @@ def main():
                         # clean_df = pd.to_datetime(clean_df[all_headers[col_number]], format='%m/%d/%Y %I:%M:%S %p')
                         clean_df[all_headers[col_number]] = pd.to_datetime(clean_df[all_headers[col_number]], format="%m/%d/%Y %I:%M:%S %p")
                         # print("made the clean df yo")
+                        clean_df[all_headers[col_number]] = pd.to_datetime(clean_df[all_headers[col_number]]).sub(pd.Timestamp('2010-01-01')).dt.days
+                        
                     
                     clean_lst = clean_df[all_headers[col_number]].to_list()
                     # print("made the clean list")
@@ -1349,7 +1384,12 @@ def main():
 
                     try:
                         s_time = time.time()
-                        describeColumn2(clean_sorted_lst, col_number, data_bools)
+                        
+                        if (all_headers[col_number] == 'Date Rptd' or all_headers[col_number] == 'DATE OCC'):
+                            describeColumn2(clean_sorted_lst, col_number, data_bools, dtype='date')
+                        else:
+                            describeColumn2(clean_sorted_lst, col_number, data_bools)
+                            
                         # describeColumn(datalst, col_number, data_bools)
                         # describeColumn(clean_lst, col_number, data_bools)
                         #stats = describeColumn(data_frame, included_headers[col_number]) # TODO
@@ -1360,8 +1400,8 @@ def main():
                         print("Time to process is", (e_time-s_time),"sec.")
                     except:
                         print("stats did not process successfully")
-                        
-                    print("====== End Print ======")
+                            
+                        print("====== End Print ======")
                     input("Press any key to continue...")
                         
                     continue
@@ -1467,12 +1507,12 @@ def main():
                     if (all_headers[col_number] == 'Mocodes'):
                         new_lst = list()
                         for codes in clean_lst:
-                            sub_codes = codes.split()
-                            for code in sub_codes:
-                                new_lst.append(code)
-                    
-                        clean_lst = new_lst       
-                            
+                            try:
+                                new_lst.append(int("".join(codes.split())))
+                            except:
+                                continue
+                        # print(new_lst)                            
+                        clean_lst = new_lst
                     
                     sortData(clean_lst, sort_type)
                     print(clean_lst)
@@ -1540,7 +1580,7 @@ def main():
             clear()
             num_rows = [100, 1000, 5000]
             printMenu()
-            sub_menu_option = getResponse(printMenu, -1, 3)
+            sub_menu_option = getResponse(printMenu, -1, 2)
             
             print(f"printing {num_rows[sub_menu_option]} number of rows...\n")
             printDataset(data_frame, num_rows[sub_menu_option]) # TODO
