@@ -346,20 +346,17 @@ def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
         Returns: pandas dataframe containing all of the data less the 5 dropped columns'''
     csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True, dtype = {"Date Rptd":"string", "year": "int32"} )
     
-    drop_columns = ['Unnamed: 0', 'Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4', 'Cross Street']
-    
+    drop_columns2 = ['Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4', 'Cross Street']
+
     try:
-        csv_arr.drop(drop_columns, axis= 1, inplace = True)
+        csv_arr.drop('Unnamed: 0',  axis= 1, inplace = True)
+        csv_arr.drop(drop_columns2, axis= 1, inplace = True)
     except:
         pass
     
     headers = list(csv_arr.columns)
 
     return(csv_arr)
-
-def getColumnDictionary(column_name):
-    pass
-
 
 '''Gets a list of csv files in the current working directory'''
 def getCsvFileList():
@@ -480,6 +477,8 @@ def describeColumn2(clean_sorted_lst, col_number, data_bools, **kwargs):
        
     total = counts(clean_sorted_lst)
     unique = uniqueCounts(clean_sorted_lst)
+    print("col_number", col_number)
+    print("len(data_bools):", len(data_bools))
     if (data_bools[col_number]["mean"] == True):
         # print("getting standev")
         mvs = stanDev(clean_sorted_lst)
@@ -1030,6 +1029,10 @@ def main():
                         print("stats did not process successfully")
                             
                         print("====== End Print ======")
+                        
+                        
+                        
+                        
                     input("Press any key to continue...")
                         
                     continue
