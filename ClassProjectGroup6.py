@@ -190,7 +190,8 @@ def Top10Streets(data):
 
     # Print the results
     now = datetime.now()
-    for i, (street, count) in enumerate(topStreets.iteritems()):
+    # for i, (street, count) in enumerate(topStreets.iteritems()):
+    for i, (street, count) in enumerate(topStreets.items()):
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] {i+1}. {street}: {count} crimes")
 
@@ -210,7 +211,8 @@ def Top5HWood(data):
     
     # Print the results
     
-    for i, (hour, count) in enumerate(topHours.iteritems()):
+    # for i, (hour, count) in enumerate(topHours.iteritems()):
+    for i, (hour, count) in enumerate(topHours.items()):
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] {i+1}: {int(hour):02d}:00 - {int(hour):02d}:59: {count} crimes")
 
@@ -283,7 +285,8 @@ def printMostCommonCrime(data):
     topCrimeTypes = crimeCounts.head(10)
 
     # Print the results
-    for i, (crimeType, count) in enumerate(topCrimeTypes.iteritems()):
+    # for i, (crimeType, count) in enumerate(topCrimeTypes.iteritems()):
+    for i, (crimeType, count) in enumerate(topCrimeTypes.items()):
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] {i+1}. {crimeType}: {count}")
 
