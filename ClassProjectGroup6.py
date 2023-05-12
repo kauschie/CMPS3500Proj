@@ -111,7 +111,7 @@ def totalUniqueCount(filename):
     now = datetime.now()
     #pandaBegin = time.time()
     # group data by year and count unique crimes
-    countsByYear = filename.groupby('year')['Crm Cd'].nunique()
+    countsByYear = filename.groupby('year')['DR_NO'].nunique()
     
     # sort the counts in descending order and return them
     sortedCounts = sorted(countsByYear.items(), key=lambda x: x[0], reverse=True)
@@ -143,7 +143,7 @@ def countCrimesByArea(data):
 def MonthsUniqueCrimes(data):
     # copy data and add index locater
     dataCopy = data.copy()
-    dataCopy = data.reindex(['DATE OCC', 'Crm Cd'], axis = 1)
+    dataCopy = data.reindex(['DATE OCC', 'DR_NO'], axis = 1)
     dataCopy.iloc[0,1]
     
 
@@ -151,7 +151,7 @@ def MonthsUniqueCrimes(data):
     data['DATE OCC'] = pd.to_datetime(data['DATE OCC'], format='%m/%d/%Y %I:%M:%S %p')
     
     # Group the data by month and count unique crimes
-    countsByMonth = data.groupby(data['DATE OCC'].dt.strftime('%B'))['Crm Cd'].nunique()
+    countsByMonth = data.groupby(data['DATE OCC'].dt.strftime('%B'))['DR_NO'].nunique()
     
     # Sort the counts in ascending order and return them
     now = datetime.now()
@@ -1093,9 +1093,9 @@ def main():
                     
                     # send in a sorted list
                         
-                    clean_sorted_lst = sorted(clean_lst)
+                    # clean_sorted_lst = sorted(clean_lst)
                     # just in case we need to use our own sort
-                    # clean_sorted_lst = sortData(clean_lst, 1)
+                    clean_sorted_lst = sortData(clean_lst, 1)
 
                     
                     print("done cleaning data...")
