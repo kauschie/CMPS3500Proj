@@ -629,6 +629,25 @@ def printDataset(data_frame, num_rows):
     data_frame.iloc[:num_rows].to_csv(dts)
     pd.reset_option("max_columns")
     
+def printSort(dlist):
+    date_time = datetime.now()
+    dts = date_time.strftime("%y%m%d%H%M%S_sorted_data.txt")
+    print("Sorted data is being written to ((", dts, "))")
+    f = open(dts, 'w')
+    for item in dlist:
+        f.write(str(item))
+    f.close()
+    print(f"file {dts} written successfully")
+    
+def printSearch(data_frame, row_match):
+    pd.set_option('display.max_columns', None)
+    # print(data_frame.loc[row_match])
+    date_time = datetime.now()
+    dts = date_time.strftime("%y%m%d%H%M%S_search.csv")
+    print("Data was written to ((", dts, "))")
+    data_frame.iloc[row_match].to_csv(dts)
+    pd.reset_option("max_columns")
+    print(f"file {dts} written successfully")
     
 def getResponse(foo, min_val, max_val, **kwargs):
     '''Takes in a print function (foo) and tests against minumum
@@ -701,6 +720,8 @@ def search(data_frame, col_num, search_string):
         print("Either the data wasn't in the table or you should")
         print("check that you entered the information correctly")
     
+    printSearch(data_frame, row_match)
+    
     input("Press any key to continue")
 
             
@@ -749,13 +770,13 @@ def printDropHeaders(header_list):
     
 
 def printDayPrompt():
-    print("What day do you want to search?")
+    print("What day do you want to search? (DD)")
 
 def printMonthPrompt():
-    print("What month do you want to search? ")
+    print("What month do you want to search? (MM)")
     
 def printYearPrompt():
-    print("What year do you want to search?")
+    print("What year do you want to search? (YYYY)")
     
 # def printInclHeaders(incl_header_list):
 #     printHeaders(incl_header_list)
@@ -1101,19 +1122,8 @@ def main():
                         year = getResponse(printYearPrompt, 1900, 2023)
                         printMonthPrompt()
                         month = getResponse(printMonthPrompt, 1, 12)
-                        # months_31 = [1, 3, 5, 7, 8, 10, 12]
-                        # months_30 = [4, 6, 9, 11]
-                        # if (month in months_31):
-                        #     # print("month had 31 days")
-                        #     max_day = 31
-                        # elif (month in months_30):
-                        #     # print("month had 30 days")
-                        #     max_day = 30
-                        # else:
-                        #     print("month was february")
-                        #     max_day = 29
                         printDayPrompt()
-                        day = getResponse(printDayPrompt,1, 31)
+                        day = getResponse(printDayPrompt, 1, 31)
                         
                         m_str = str(month).rjust(2, '0')
                         d_str = str(day).rjust(2, '0')
@@ -1123,6 +1133,9 @@ def main():
                         # print(search_ele)
                     else:
                         search_ele = input("Enter the search value: ")
+                    
+                    
+                    
                     
                     search(data_frame, col_number, search_ele)
                     
@@ -1161,7 +1174,7 @@ def main():
                         clean_lst = new_lst
                     
                     sortData(clean_lst, sort_type)
-                    # print(clean_lst)
+                    printSort(clean_lst)
                     input("Press any key to continue")
                     continue
                     
