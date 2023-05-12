@@ -20,6 +20,10 @@ import math
 import re
 import calendar
 
+######################################################
+##       Statistical / Mathematical Functions       ##       
+######################################################
+
 def counts(data):
     ''' takes in a list of data and returns the number of items
         note: i realize len() is much simpler but its not allowed here'''
@@ -99,8 +103,9 @@ def modeFunc2(sorted_list):
     return sorted_data[0][1]    
     
 
-################################## BEGINNING OF DATA ANALYSIS ##################################
-
+######################################################
+##         Answers to Data Analysis Questions      ##       
+######################################################
 
 def totalUniqueCount(filename):
     now = datetime.now()
@@ -334,35 +339,20 @@ def OlderManTop5(data):
     for i,(area, count) in enumerate(crimeCountByArea.head(5).items(), 1):
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] {i}. {area}: {count}")
-################################## END OF DATA ANALYSIS ##################################
+
+
+
+######################################################
+##        File I/O / System Functions               ##
+######################################################
+
+# clears screen - designed to work on multiple os's
 def clear():
     if os.name == 'nt':
         _ = os.system('cls')
     else:
         _ = os.system('clear')
-
-def getPrintColumns(dframe):
-    headers = list(dframe.columns)
-    print(headers)
-
-#Time to read and store data in an array
-def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
-    '''Pass in name of data file, will call the main file we were given by default
-        Returns: pandas dataframe containing all of the data less the 5 dropped columns'''
-    csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True, dtype = {"Date Rptd":"string", "year": "int32"} )
-    
-    drop_columns2 = ['Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4', 'Cross Street']
-
-    try:
-        csv_arr.drop('Unnamed: 0',  axis= 1, inplace = True)
-        csv_arr.drop(drop_columns2, axis= 1, inplace = True)
-    except:
-        pass
-    
-    headers = list(csv_arr.columns)
-
-    return(csv_arr)
-
+        
 '''Gets a list of csv files in the current working directory'''
 def getCsvFileList():
     os.chdir(os.getcwd())   # change directory to current working directory
@@ -387,7 +377,103 @@ def getCsvFileList():
         
     # print(files) # debug
     return files
+        
+#Time to read and store data in an array
+def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
+    '''Pass in name of data file, will call the main file we were given by default
+        Returns: pandas dataframe containing all of the data less the 5 dropped columns'''
+    csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True, dtype = {"Date Rptd":"string", "year": "int32"} )
+    
+    drop_columns2 = ['Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4', 'Cross Street']
 
+    try:
+        csv_arr.drop('Unnamed: 0',  axis= 1, inplace = True)
+        csv_arr.drop(drop_columns2, axis= 1, inplace = True)
+    except:
+        pass
+    
+    headers = list(csv_arr.columns)
+
+    return(csv_arr)
+
+        
+def writeDataset(data_frame, num_rows):
+    '''takes in a dataframe and writes num_rows number of rows out to a file
+    with the date appended to the filename'''
+    
+    pd.set_option('display.max_columns', None)
+    print(data_frame.iloc[:num_rows])
+    
+    date_time = datetime.now()
+    dts = date_time.strftime("%y%m%d%H%M%S_data_print.csv")
+    try:
+        data_frame.iloc[:num_rows].to_csv(dts)
+        print("Data was written to ((", dts, ")) successfully")
+    except:
+        print("Data was not written successfully")
+    pd.reset_option("max_columns")
+    
+def writeSort(dlist):
+    '''takes in a list of items from sort function and writes 
+    the data out to a csv file with the date appended to the filename'''
+    
+    date_time = datetime.now()
+    dts = date_time.strftime("%y%m%d%H%M%S_sorted_data.txt")
+    print("Sorted data is being written to ((", dts, "))")
+    f = open(dts, 'w')
+    for item in dlist:
+        f.write(str(item) + '\n')
+    f.close()
+    print(f"file {dts} written successfully")
+    
+def writeSearch(data_frame, row_match):
+    ''' takes in a pandas dataframe and a list of rows from the search fucntion
+    that are matches from the search and write the matches out to a file with 
+    the date appended to the file name'''
+    
+    if (len(row_match) > 0):
+        pd.set_option('display.max_columns', None)
+        # print(data_frame.loc[row_match])
+        date_time = datetime.now()
+        dts = date_time.strftime("%y%m%d%H%M%S_search.csv")
+        print("Search Results are writing to ((", dts, "))")
+        data_frame.iloc[row_match].to_csv(dts)
+        pd.reset_option("max_columns")
+        print(f"file {dts} written successfully")
+    else:
+        print(f"No search results, not writing to a file.")
+
+
+######################################################
+##                 Sorting / Searching              ##
+######################################################
+
+# searches a specified data_frame column for a user inputed string/integer
+def search(data_frame, col_num, search_string):
+    row_match = []
+    found = False
+    col_name = data_frame.columns[col_num]
+    
+    print("Searching...")
+    s_time = time.time()
+    for index, row in data_frame.iterrows():
+        if(re.search(search_string, str(row[col_name]), re.IGNORECASE)):
+            row_match.append(index)
+    e_time = time.time()
+        
+    if (len(row_match) != 0):
+        print(len(row_match), "Items found!")
+        print(data_frame.loc[row_match])
+        print("Time to process is", (e_time-s_time),"sec.")
+    else:
+        print(f"could not locate (({search_string})) in the data")
+        print("Total search time was", (e_time-s_time),"sec.")
+        print("Either the data wasn't in the table or you should")
+        print("check that you entered the information correctly")
+    
+    writeSearch(data_frame, row_match)
+    
+    input("Press any key to continue")
 
 def sortData(lst, format):
     ''' method for sorting data frame data by passed in column_name
@@ -408,6 +494,7 @@ def sortData(lst, format):
 
 
 def minHeapify(lst, n, i):
+    ''' creates a minheap from a list of items'''
     smallest = i    #initialize smallest as root
     l = 2 * i + 1 # left child
     r = 2 * i + 2 # right child
@@ -429,6 +516,7 @@ def minHeapify(lst, n, i):
 
 
 def heapify(lst, i, upper):
+    ''' creats a maxheap from a list of items'''
     while (True):
         l, r = i*2+1, i*2+2
 
@@ -463,6 +551,8 @@ def heapify(lst, i, upper):
 # The main function to sort an array of given size
   
 def heapSort(lst):
+    '''sorts by heapsort using maxheap
+        this results in a sorted list in ascending order'''
     for itm in range(len(lst)-2//2, -1, -1):
         heapify(lst, itm, len(lst))
     
@@ -471,6 +561,8 @@ def heapSort(lst):
         heapify(lst, 0, end)
 
 def minHeapSort(lst, n):
+    '''sorts by heapsort using minheap
+        this results in a sorted list in descending order'''
     for i in range(int(n/2) -1, -1, -1):
         minHeapify(lst, n, i)
         
@@ -478,8 +570,14 @@ def minHeapSort(lst, n):
         lst[0], lst[i] = lst[i], lst[0]
         minHeapify(lst, i, 0)
 
+
+######################################################
+##          User Input /  Printing Functions        ##
+######################################################
+
+
 def describeColumn2(clean_sorted_lst, col_number, data_bools, **kwargs):
-    # print("in describecolumn2")
+    '''Helper function that calls math functions and prints results'''
        
     total = counts(clean_sorted_lst)
     unique = uniqueCounts(clean_sorted_lst)
@@ -515,14 +613,6 @@ def describeColumn2(clean_sorted_lst, col_number, data_bools, **kwargs):
     print("Count:", total)
     print("Unique:", unique)
     
-    
-    
-        # if 'dframe' in kwargs:
-    #     df = kwargs.get('dframe')
-    #     print("made it here")
-    #     df['days'] = pd.to_datetime(df[kwargs.get('cname')]).sub(pd.Timestamp('2010-01-01')).dt.days
-    #     print(df['days'])
-    #     clean_sorted_lst =     
     
     
     if 'dtype' in kwargs:
@@ -574,40 +664,17 @@ def describeColumn2(clean_sorted_lst, col_number, data_bools, **kwargs):
         else:
             print ("STDEV: N/A")
             print ("Variance: N/A")
-    
 
-def printDataset(data_frame, num_rows):
-    pd.set_option('display.max_columns', None)
-    print(data_frame.iloc[:num_rows])
-    
-    date_time = datetime.now()
-    dts = date_time.strftime("%y%m%d%H%M%S_data_print.csv")
-    print("Data was written to ((", dts, "))")
-    data_frame.iloc[:num_rows].to_csv(dts)
-    pd.reset_option("max_columns")
-    
-def printSort(dlist):
-    date_time = datetime.now()
-    dts = date_time.strftime("%y%m%d%H%M%S_sorted_data.txt")
-    print("Sorted data is being written to ((", dts, "))")
-    f = open(dts, 'w')
-    for item in dlist:
-        f.write(str(item) + '\n')
-    f.close()
-    print(f"file {dts} written successfully")
-    
-def printSearch(data_frame, row_match):
-    pd.set_option('display.max_columns', None)
-    # print(data_frame.loc[row_match])
-    date_time = datetime.now()
-    dts = date_time.strftime("%y%m%d%H%M%S_search.csv")
-    print("Data was written to ((", dts, "))")
-    data_frame.iloc[row_match].to_csv(dts)
-    pd.reset_option("max_columns")
-    print(f"file {dts} written successfully")
-    
+
+
+def getPrintColumns(dframe):
+    ''' prints headers of a dataframe'''
+    headers = list(dframe.columns)
+    print(headers)
+
+
 def getResponse(foo, min_val, max_val, **kwargs):
-    '''Takes in a print function (foo) and tests against minumum
+    '''Takes in a print function (foo) and tests against minimum
         and maximum menu options.
         Function returns an integer value that met the response criteria
         if function foo takes parameters (like a list), they are included as a key word
@@ -653,35 +720,7 @@ def getResponse(foo, min_val, max_val, **kwargs):
         
     return response
 
-
-# searches a specified data_frame column for a user inputed string/integer
-def search(data_frame, col_num, search_string):
-    row_match = []
-    found = False
-    col_name = data_frame.columns[col_num]
-    
-    print("Searching...")
-    s_time = time.time()
-    for index, row in data_frame.iterrows():
-        if(re.search(search_string, str(row[col_name]), re.IGNORECASE)):
-            row_match.append(index)
-    e_time = time.time()
-        
-    if (len(row_match) != 0):
-        print(len(row_match), "Items found!")
-        print(data_frame.loc[row_match])
-        print("Time to process is", (e_time-s_time),"sec.")
-    else:
-        print(f"could not locate (({search_string})) in the data")
-        print("Total search time was", (e_time-s_time),"sec.")
-        print("Either the data wasn't in the table or you should")
-        print("check that you entered the information correctly")
-    
-    printSearch(data_frame, row_match)
-    
-    input("Press any key to continue")
-
-            
+      
 def printBaseMenu():
     print("Main Menu:")
     print("**********")
@@ -819,7 +858,8 @@ def printDataAnalysis(df):
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 10. List the top 5 more dangerous areas for older man (age from 65 and more) in december of 2018.")
     OlderManTop5(dataCopy)
-    
+   
+ 
 def printMenu():
     print("  Print Menu  :")
     print("***************")
@@ -828,6 +868,13 @@ def printMenu():
     print(f"\t[2] = first 5000 lines\n")
     print(f"Select how many rows to print")
     print("Enter -1 to go back")
+
+
+
+######################################################
+##       Data Input / Prompt Printing Functions     ##
+######################################################
+
 
 '''Main Logic // Menu loop'''
 def main():
@@ -1158,7 +1205,7 @@ def main():
                         clean_lst = new_lst
                     
                     sortData(clean_lst, sort_type)
-                    printSort(clean_lst)
+                    writeSort(clean_lst)
                     input("Press any key to continue")
                     continue
                     
@@ -1166,10 +1213,6 @@ def main():
                     # back to the main menu
                     input("Back to the main menu...")
                     
-            
-            
-            
-            
             error_msg = "Data Exploration Section"
             continue
             
@@ -1197,7 +1240,7 @@ def main():
             
             if sub_menu_option != -1:
                 print(f"printing {num_rows[sub_menu_option]} number of rows...\n")
-                printDataset(data_frame, num_rows[sub_menu_option]) # TODO
+                writeDataset(data_frame, num_rows[sub_menu_option]) # TODO
             # print("done printing")
             # print("data also appended to dataout.txt")
             input("Press any key to continue...")
