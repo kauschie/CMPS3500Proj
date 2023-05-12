@@ -175,7 +175,8 @@ def Top10Streets(data):
     # for i, (street, count) in enumerate(topStreets.iteritems()):
     for i, (street, count) in enumerate(topStreets.items()):
         current_time = now.strftime("%H:%M:%S.%f")
-        print(f"[{current_time}] {i+1}. {street}: {count} crimes")
+        easy_street = " ".join(street.split())
+        print(f"[{current_time}] {i+1}. {easy_street}: {count} crimes")
 
 def Top5HWood(data):
     now = datetime.now()
@@ -256,7 +257,11 @@ def MostTime(data):
     # Print the details of the crime
     for key, value in maxReportTime.to_dict().items():
         current_time = now.strftime("%H:%M:%S.%f")
-        print(f"[{current_time}] {key}: {value}")
+        if (key == 'LOCATION'):
+            easy_street = " ".join(value.split())
+            print(f"[{current_time}] {key}: {easy_street}")
+        else:
+            print(f"[{current_time}] {key}: {value}")
 
 def printMostCommonCrime(data):
     now = datetime.now()
