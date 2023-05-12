@@ -114,7 +114,7 @@ def totalUniqueCount(filename):
     countsByYear = filename.groupby('year')['DR_NO'].nunique()
     
     # sort the counts in descending order and return them
-    sortedCounts = sorted(countsByYear.items(), key=lambda x: x[0], reverse=True)
+    sortedCounts = sorted(countsByYear.items(), key=lambda x: x[1], reverse=True)
     for year, count in sortedCounts:
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] ""{}: Total Unique Crimes {}".format(year, count))
