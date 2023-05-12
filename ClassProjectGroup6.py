@@ -21,6 +21,8 @@ import re
 import calendar
 
 def counts(data):
+    ''' takes in a list of data and returns the number of items
+        note: i realize len() is much simpler but its not allowed here'''
     count = 0
     # loop through data add one per row in data
     for row in data:
@@ -29,71 +31,46 @@ def counts(data):
     return count
 
 def uniqueCounts(data):
+    '''returns the number of unique items in a list'''
     # isDate = True
     unique_set = set()
     # loop through data and store if was not previously found
     for unique in data:
         if not pd.isna(unique):
             if isinstance(unique, str):
+                
                 try:
                     datetime.strptime(unique, '%m/%d/%Y %I:%M:%S %p')
-                    # date_str_lst.append(temp)
                 except ValueError:
-                    # str_lst.append(temp)
-                    # print(unique, "not a date")
                     pass
-
             if unique not in unique_set:
                 unique_set.add(unique)
-                # print(unique, "being added")
-            
-        # if not pd.isna(unique) and unique not in unique_set:
-        #     unique_set.add(unique)
-    # print("Unique: " , len(unique_set))
     return len(unique_set)
 
-# Standard Deviation and Variance 
-def stanDev(data):
+# mean varianca and Standard Deviation
+'''calculates all 3''' 
+def meanVarStdev(data):
     # variables
     
-    # print("about to make stats dict")  
     stats = {'mean': 0, 'var': 0, 'st_dev': 0}
-    # print("done making stats dict")
     stand_diff = set()
-    # stats['mean'] = 0
     sum_sq = 0
-    # stats['var'] = 0
-    # stats['st_dev'] = 0
-
 
     # Step1: find the stats['mean']
-    # print("getting mean")
     for index in data:
         stats['mean'] += index
     stats['mean'] = round(stats['mean'] / len(data))
 
     # Step 2: find each deviation of the stats['mean'] and square then add it to stand_diff list
-    # print("getting stand_diff")
     for index in data:
         stand_diff.add(math.pow((stats['mean'] - index), 2))
 
-    # Step3: sum of the stand_diff
-    # print("getting sum_sq")
     for sum_index in stand_diff:
         sum_sq += sum_index
 
-    # Step 4: variance and sqrt to get stdev  
-    # print("calculating variance")
     stats['var'] = (round(sum_sq/ (len(data)-1),4))
-    # print("calculating st_dev")
     stats['st_dev'] = math.sqrt(stats['var'])
 
-    # print statements
-    # print("Mean: ", stats['mean'])
-    # print("STDEV: ", round(stats['st_dev'], 4))
-    # print("Variance: ", stats['var'])
-    # had two functions but you need to find the variance to find the stdev, so just merged the
-    # two functions
     return stats
 
 def medianFunc2(data):
@@ -426,6 +403,7 @@ def sortData(lst, format):
         print("bad arg", format, "passed to sortData")
     e_time = time.time()
     print("Time to sort is", (e_time-s_time),"sec.")
+    return lst
     
 
 
@@ -505,11 +483,11 @@ def describeColumn2(clean_sorted_lst, col_number, data_bools, **kwargs):
        
     total = counts(clean_sorted_lst)
     unique = uniqueCounts(clean_sorted_lst)
-    print("col_number", col_number)
-    print("len(data_bools):", len(data_bools))
+    # print("col_number", col_number)
+    # print("len(data_bools):", len(data_bools))
     if (data_bools[col_number]["mean"] == True):
         # print("getting standev")
-        mvs = stanDev(clean_sorted_lst)
+        mvs = meanVarStdev(clean_sorted_lst)
     else:
         mvs = None
     if (data_bools[col_number]["median"] == True):
@@ -614,7 +592,7 @@ def printSort(dlist):
     print("Sorted data is being written to ((", dts, "))")
     f = open(dts, 'w')
     for item in dlist:
-        f.write(str(item))
+        f.write(str(item) + '\n')
     f.close()
     print(f"file {dts} written successfully")
     
@@ -864,41 +842,41 @@ def main():
     
     data_bools_unmod = [
                     # dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #0
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #1
-                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #2
-                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #3
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #1 DR_NO (INT)
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #2 DATE rptd
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #3 DATE occ
                     
-                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #4
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #4 TIME occ (INT)
                     
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #5
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #6
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #7
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #8
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #9
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #10
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #11
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #5 area
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #6 area name
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #7 rpt dist no
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #8 part 1-2
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #9 crm cd
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #10 crm cd desc
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #11 mocodes *added mean/std/var
                     
-                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #12
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #12 Age
                     
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=False, max=False), #13
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=False, max=False), #14
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #13 Sex * added min/max
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #14 Descent * added min/max
                     
-                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #15
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #16
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #17
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #18
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #19
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #20
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #21
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #15 Premesis Code * added mean/std/var
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #16 Premesis Description * added min/max/med
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #17 Weapon Used Cd * added mean/std/var/min/max
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #18 Weapon Desc * added min/max/med
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #19 Status
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #20 Status Desc
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #21 Crm Cd 1 * added m/s/v/min/max
                     # dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #22
                     # dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #23
                     # dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #24
-                    dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #25
+                    dict(count=True, unique_count=True, mean=False, median=True, mode=True, stdev=False, var=False, min=True, max=True), #25 Location
                     # dict(count=True, unique_count=True, mean=False, median=False, mode=True, stdev=False, var=False, min=False, max=False), #26
                     
-                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #27
-                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #28
-                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True)] #29
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #27 LAT
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True), #28 LON
+                    dict(count=True, unique_count=True, mean=True, median=True, mode=True, stdev=True, var=True, min=True, max=True)] #29 YEAR
     data_bools = data_bools_unmod.copy()
     
     
@@ -1024,6 +1002,9 @@ def main():
                     print("cleaning data...")
                     clean_df = data_frame.dropna(axis = 'index', subset = [all_headers[col_number]])
                     
+                    
+                    # Clean specific columns in the data frame
+                    
                     # clean out 0.0's from lat and long columns
                     if (all_headers[col_number] == 'LAT' or all_headers[col_number] == 'LON'):
                         clean_df = clean_df[clean_df[all_headers[col_number]] != 0]
@@ -1045,17 +1026,30 @@ def main():
                         clean_df[all_headers[col_number]] = pd.to_datetime(clean_df[all_headers[col_number]], format="%m/%d/%Y %I:%M:%S %p")
                         # print("made the clean df yo")
                         clean_df[all_headers[col_number]] = pd.to_datetime(clean_df[all_headers[col_number]]).sub(pd.Timestamp('2010-01-01')).dt.days
-                        
                     
-                    clean_lst = clean_df[all_headers[col_number]].to_list()
-                    # print("made the clean list")
+                    
+                    # if mocodes, split mocodes on space and join as one number
+                     
+                    if (all_headers[col_number] == 'Mocodes'):
+                            # split the Mocodes
+                        clean_lst = clean_df[all_headers[col_number]].to_list()
+                        new_lst = list()
+                        for codes in clean_lst:
+                            try:
+                                new_lst.append(int("".join(codes.split())))
+                            except:
+                                continue
+                        # print(new_lst)                            
+                        clean_lst = new_lst
+                    else:
+                        clean_lst = clean_df[all_headers[col_number]].to_list()
+                    
+                    # send in a sorted list
+                        
                     clean_sorted_lst = sorted(clean_lst)
-                    # print("made the clean sorted list")
-                    # fin = open("log.log", "w")
-                    # for val in clean_lst:
-                    #     # print(val)
-                    #     fin.write(str(val) + '\n')
-                    # fin.close()
+                    # just in case we need to use our own sort
+                    # clean_sorted_lst = sortData(clean_lst, 1)
+
                     
                     print("done cleaning data...")
                     
