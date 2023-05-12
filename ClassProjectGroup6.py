@@ -12,12 +12,6 @@
 # description: Implementation Basic Data Analysis Routines
 """
 
-# TODO:
-#   - Data Structure for holding whether column vals are strings or floats
-#   - this should coincide with the excel spreadsheet as well?
-
-
-
 import pandas as pd
 import time
 import os
@@ -102,65 +96,6 @@ def stanDev(data):
     # two functions
     return stats
 
-def maxFunc(data):
-    # make individ lists
-    int_lst = []
-    flt_lst = []
-    str_lst = []
-    date_str_lst = []
-
-    # separate ints and floats / date str and str
-    for temp in data:
-        if isinstance(temp, int):
-            int_lst.append(temp)
-        elif isinstance(temp, float):
-            flt_lst.append(temp)
-        elif isinstance(temp, str):
-            try:
-                datetime.strptime(temp, '%m/%d/%Y %I:%M:%S %p')
-                date_str_lst.append(temp)
-            except ValueError:
-                str_lst.append(temp)
-
-    # find max int
-    max_num = None
-    if int_lst:
-        max_num = int_lst[0]
-        for i in range(1, len(int_lst)):
-            if int_lst[i] > max_num:
-                max_num = int_lst[i]
-
-    # find max flt
-    if flt_lst:
-        if max_num is None or flt_lst[0] > max_num:
-            max_num = flt_lst[0]
-        for i in range(1, len(flt_lst)):
-            if flt_lst[i] > max_num:
-                max_num = flt_lst[i]
-
-    # find max str
-    max_str = None
-    if str_lst:
-        max_str = str_lst[0]
-        for i in range(1, len(str_lst)):
-            if str_lst[i] > max_str:
-                max_str = str_lst[i]
-
-    # find max date
-    max_date_str = None
-    if date_str_lst:
-        max_date_str = date_str_lst[0]
-        for i in range(1, len(date_str_lst)):
-            if datetime.strptime(date_str_lst[i], '%m/%d/%Y %I:%M:%S %p') > datetime.strptime(max_date_str, '%m/%d/%Y %I:%M:%S %p'):
-                max_date_str = date_str_lst[i]
-
-    if max_str is not None:
-        print("Maximum: ", max_str)
-    elif max_num is not None:
-        print("Maximum: ", max_num)
-    else:
-        print("Maximum: ", max_date_str)
-
 def medianFunc2(data):
     '''Takes in a sorted list and returns middle value'''
     mid = int((len(data)/2))
@@ -175,120 +110,6 @@ def maxFunc2(data):
     '''data: a list sorted in ascending order'''
     return data[-1]
 
-def minFunc(data):
-    # make individ lists
-    int_lst = []
-    flt_lst = []
-    str_lst = []
-    date_str_lst = []
-
-    # separate ints and floats / date str and str
-    for temp in data:
-        if isinstance(temp, int):
-            int_lst.append(temp)
-        elif isinstance(temp, float):
-            flt_lst.append(temp)
-        elif isinstance(temp, str):
-            try:
-                datetime.strptime(temp, '%m/%d/%Y %I:%M:%S %p')
-                date_str_lst.append(temp)
-            except ValueError:
-                str_lst.append(temp)
-
-    # find max int
-    min_num = None
-    if int_lst:
-        min_num = int_lst[0]
-        for i in range(1, len(int_lst)):
-            if int_lst[i] < min_num:
-                min_num = int_lst[i]
-
-    # find max flt
-    if flt_lst:
-        if min_num is None or flt_lst[0] < min_num:
-            min_num = flt_lst[0]
-        for i in range(1, len(flt_lst)):
-            if flt_lst[i] < min_num:
-                min_num = flt_lst[i]
-
-    # find max str
-    min_str = None
-    if str_lst:
-        min_str = str_lst[0]
-        for i in range(1, len(str_lst)):
-            if str_lst[i] < min_str:
-                min_str = str_lst[i]
-
-    # find max date
-    min_date_str = None
-    if date_str_lst:
-        min_date_str = date_str_lst[0]
-        for i in range(1, len(date_str_lst)):
-            if datetime.strptime(date_str_lst[i], '%m/%d/%Y %I:%M:%S %p') < datetime.strptime(min_date_str, '%m/%d/%Y %I:%M:%S %p'):
-                min_date_str = date_str_lst[i]
-
-    if min_str is not None:
-        print("Minimum: ", min_str)
-    elif min_num is not None:
-        print("Minimum: ", min_num)
-    else:
-        print("Minimum: ", min_date_str)
-
-def medianFunc(data):
-    # make list for int, float, str, and date str
-    int_list = []
-    float_list = []
-    str_list = []
-    date_str_list = []
-    
-    # separate the ints/floats together
-    # and the date str and other strings separately
-    for temp in data:
-        if isinstance(temp, int):
-            int_list.append(temp)
-        elif isinstance(temp, float):
-            float_list.append(temp)
-        elif isinstance(temp, str):
-            try:
-                datetime.strptime(temp, '%m/%d/%Y %I:%M:%S %p')
-                date_str_list.append(temp)
-            except ValueError:
-                str_list.append(temp)
-
-    # sort int and float numerically
-    int_list.sort()
-    float_list.sort()
-
-    # sort string alphabetically and date str chronologically using datetime
-    str_list.sort()
-    date_str_list.sort(key=lambda s: datetime.strptime(s, '%m/%d/%Y %I:%M:%S %p'))
-
-    # merge them all together
-    merged_list = int_list + float_list + str_list + date_str_list
-
-    # used to see if sorted correctly
-    #print(merged_list)
-
-    # find median
-    length_list = len(merged_list)
-    if length_list % 2 == 0:
-        # when there is more then one median, chose median that is "smaller"
-        temp1 = length_list // 2
-        temp2 = temp1 - 1
-        if isinstance(merged_list[temp1], str):
-            median = sorted([merged_list[temp1], merged_list[temp2]])[0]
-        else:
-            median = (merged_list[temp1] + merged_list[temp2]) / 2
-            # if float ends in .0, change to int
-            if median.is_integer():
-                median = int(median)
-    else:
-        # output median if there's only one
-        tmp = length_list // 2
-        median = merged_list[tmp]
-
-    print("Median: ", median)
-
 def modeFunc2(sorted_list):
     '''takes in a sorted list of data in its correct format'''
     data = dict()
@@ -300,74 +121,6 @@ def modeFunc2(sorted_list):
     # print("mode is:", sorted_data[0][1])
     return sorted_data[0][1]    
     
-
-def modeFunc(data):
-    # make list for int, float, str, and date str
-    int_list = []
-    float_list = []
-    str_list = []
-    date_str_list = []
-    
-    # separate the ints/floats together
-    # and the date str and other strings separately
-    for temp in data:
-        if isinstance(temp, int):
-            int_list.append(temp)
-        elif isinstance(temp, float):
-            float_list.append(temp)
-        elif isinstance(temp, str):
-            try:
-                datetime.strptime(temp, '%m/%d/%Y %I:%M:%S %p')
-                date_str_list.append(temp)
-            except ValueError:
-                str_list.append(temp)
-
-    # sort int and float numerically
-    int_list.sort()
-    float_list.sort()
-
-    # sort string alphabetically and date str chronologically
-    str_list.sort()
-    date_str_list.sort(key=lambda s: datetime.strptime(s, '%m/%d/%Y %I:%M:%S %p'))
-
-    # merge them all together
-    merged_list = int_list + float_list + str_list + date_str_list
-    
-    # used to see if sorted correctly
-    #print(merged_list)
-
-    # find mode
-    count_dict = {}
-    for cnt in merged_list:
-        if cnt in count_dict:
-            count_dict[cnt] += 1
-        else:
-            count_dict[cnt] = 1
-
-    max_count = 0
-    modes = []
-    for itm, count in count_dict.items():
-        if count > max_count:
-            max_count = count
-            modes = [itm]
-        elif count == max_count:
-            modes.append(itm)
-
-    # for multiple ints, floats, strings, and dates choose smaller
-    mode = modes[0]
-    for multi in modes:
-        if isinstance(multi, (int, float)):
-            if multi < mode:
-                mode = multi
-        elif isinstance(multi, str):
-            if multi < mode:
-                mode = multi
-        elif isinstance(multi, datetime):
-            if multi < mode:
-                mode = multi
-
-    print("Mode: ", mode)
-    return mode
 
 ################################## BEGINNING OF DATA ANALYSIS ##################################
 
@@ -429,7 +182,8 @@ def Top10Streets(data):
     topStreets = streetCounts.head(10)
 
     # Print the results
-    for i, (street, count) in enumerate(topStreets.iteritems()):
+    # for i, (street, count) in enumerate(topStreets.iteritems()):
+    for i, (street, count) in enumerate(topStreets.items()):
         print(f"{i+1}. {street}: {count} crimes")
 
 def Top5HWood(data):
@@ -447,7 +201,8 @@ def Top5HWood(data):
     
     # Print the results
     
-    for i, (hour, count) in enumerate(topHours.iteritems()):
+    # for i, (hour, count) in enumerate(topHours.iteritems()):
+    for i, (hour, count) in enumerate(topHours.items()):
         print(f"{i+1}: {int(hour):02d}:00 - {int(hour):02d}:59: {count} crimes")
 
 def printCCFrauds(data):
@@ -513,10 +268,9 @@ def printMostCommonCrime(data):
     topCrimeTypes = crimeCounts.head(10)
 
     # Print the results
-    for i, (crimeType, count) in enumerate(topCrimeTypes.iteritems()):
+    # for i, (crimeType, count) in enumerate(topCrimeTypes.iteritems()):
+    for i, (crimeType, count) in enumerate(topCrimeTypes.items()):
         print(f"{i+1}. {crimeType}: {count}")
-
-
 
 def printLALunchTime(data):
 
@@ -587,125 +341,16 @@ def getPrintColumns(dframe):
     print(headers)
 
 #Time to read and store data in an array
-
 def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
-    # s_time = time.time()
+    '''Pass in name of data file, will call the main file we were given by default
+        Returns: pandas dataframe containing all of the data less the 5 dropped columns'''
     csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True, dtype = {"Date Rptd":"string", "year": "int32"} )
     drop_columns = ['Unnamed: 0', 'Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4', 'Cross Street']
     csv_arr.drop(drop_columns, axis= 1, inplace = True)
     
     headers = list(csv_arr.columns)
-    #rows = df.index.values
-    result = csv_arr.dtypes
-
-    print(f"[{len(csv_arr)} rows x {len(headers)} columns]")
-    print("#     Column    \tNon-null\tDtype")
-    print("---   ----------\t-----------\t------")
-
-    num_na = dict()
-    num_duplicates = dict()
-    num_na_list = []
-
-
-    for header in headers:
-        num_na[header] = csv_arr[header].isna().sum()
-        #print(f"{header}: {num_na[header]}")
-    for ind in num_na.keys():                                                          # add the sum of Na of each header to a list to print later
-        num_na_list.append(num_na[ind])
-
-    for header in headers:
-        num_duplicates[header] = csv_arr.duplicated(subset=header).sum()
-        #print(f"{header}: {num_duplicates[header]}") 
-
-    for i in range(len(headers)):                                                       # print table of the loaded data
-        #print(f"{i}\t{headers[i]}\t\t{num_na_list[i]}\t{result[i]}")
-        print('%-5s'%i, '%-20s'%headers[i], '%-12s'%(len(csv_arr) - num_na_list[i]), '%-15s'%result[i])
-
-    # declare each types to find the sum of each
-    float_sum = 0
-    int_sum = 0
-    int32_sum = 0
-    object_sum = 0
-    string_sum = 0
-
-    # loop through and count each type
-    for i in range(len(headers)):
-            if result[i] == "float64":
-                float_sum += 1
-            elif result[i] == "int64":
-                int_sum += 1
-            elif result[i] == "int32":
-                int32_sum += 1
-            #elif result[i] == "string":
-                #print(result[i])
-                #print("test")
-                #string_sum += 1
-                #print("test")
-            elif result[i] == "object":
-                object_sum += 1
-    # print the sum of each type from the data            
-    print(f"dtypes: float64({float_sum}),  int32({int32_sum}),  int64({int_sum}),  object({object_sum}), string({string_sum})")
-    print(f"Memory Usage:     \n")
-
-    # print("Read time: ", (e_time-s_time), "\n")
-    #csv_arr.drop(csv_arr.columns[[28,22]], axis=1, inplace=True)
-
-    #for i in range(len(headers)):
-    #    if num_na_list[i] >> 0:
-    #        print(i)
-    #        csv_arr = csv_arr.drop(csv_arr.columns[[i]], axis= 1, inplace= True)
-     # dropping columns Crm Cd 2,Crm Cd 3, Crm Cd 4, Cross Street due to having a high rate of null values
-    #csv_arr.drop(['Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4', 'Cross Street'], axis= 1, inplace= True)
-    #csv_arr = csv_arr.drop_duplicates(subset='Cm Cd 1', keep="first")
-    #csv_arr.drop_duplicantsi
 
     return(csv_arr)
-
-
-    # s_time = time.time()
-    #csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True)    
-    # e_time = time.time()
-    """
-    If you want to access elements of csv_array or want to see the whole array use the following:
-
-    Prints the whole csv with the header at the top and row nums on the left side:
-    print(csv_arr)
-
-    Prints csv as an array without the header and row nums:
-    print(csv_arr.values)
-
-    Prints specific elements in array:
-    print(csv_arr.values[1,16])
-
-    Prints elements all elements on column 1 uptil row 4
-    print(csv_arr.values[:4,1])
-
-    Note: all null data points are set to NaN by default
-    """
-    #headers = list(csv_arr.columns)
-    
-    #result = csv_arr.dtypes
-    #for i in range(len(headers)):
-    #    print(f"{headers[i]}: {result[i]}")
-    
-    # print("Read time: ", (e_time-s_time), "\n")
-    
-  
-    #num_na = dict()
-    #num_duplicates = dict()
-    
-    #print("header  --  #NAN")
-    #for header in headers:
-    #    num_na[header] = csv_arr[header].isna().sum()
-    #    print(f"{header}: {num_na[header]}")
-        
-    #print(f"\n\nheader  --  #duplicates")
-
-    #for header in headers:
-    #    num_duplicates[header] = csv_arr.duplicated(subset=header).sum()
-    #    print(f"{header}: {num_duplicates[header]}")
-    
-    #return(csv_arr)
 
 
 '''Gets a list of csv files in the current working directory'''
@@ -739,17 +384,16 @@ def sortData(lst, format):
         lst             Data list to sort
         format = 1      Ascending
         format = 2      Descending'''
+    s_time = time.time()
     if (format == 1):
         heapSort(lst)
     elif (format == 2):
         minHeapSort(lst, len(lst))
-        # lst.reverse()
     else:
         print("bad arg", format, "passed to sortData")
-
-    # def sortData(dframe, column_name):
-#     ''' method for sorting data frame data by passed in column_name'''
-#     heapSort()
+    e_time = time.time()
+    print("Time to sort is", (e_time-s_time),"sec.")
+    
 
 
 def minHeapify(lst, n, i):
@@ -814,8 +458,6 @@ def heapSort(lst):
     for end in range(len(lst)-1, 0, -1):
         lst[0], lst[end] = lst[end], lst[0]
         heapify(lst, 0, end)
-    
-    # search(data_frame, col_number, search_ele)
 
 def minHeapSort(lst, n):
     for i in range(int(n/2) -1, -1, -1):
@@ -1042,16 +684,25 @@ def search(data_frame, col_num, search_string):
     found = False
     col_name = data_frame.columns[col_num]
     
+    print("Searching...")
+    s_time = time.time()
     for index, row in data_frame.iterrows():
         if(re.search(search_string, str(row[col_name]), re.IGNORECASE)):
             row_match.append(index)
+    e_time = time.time()
         
-    if len(row_match) != 0:
-        found = True
+    if (len(row_match) != 0):
+        print(len(row_match), "Items found!")
         print(data_frame.loc[row_match])
-            
-            
-    return found
+        print("Time to process is", (e_time-s_time),"sec.")
+    else:
+        print(f"could not locate (({search_string})) in the data")
+        print("Total search time was", (e_time-s_time),"sec.")
+        print("Either the data wasn't in the table or you should")
+        print("check that you entered the information correctly")
+    
+    input("Press any key to continue")
+
             
 def printBaseMenu():
     print("Main Menu:")
@@ -1254,12 +905,12 @@ def main():
             try:
                 s_time = time.time()
                 data_frame = readFile(menu_list[sub_menu_option-1])
-                data_frame_bak = data_frame.copy()
                 e_time = time.time()
                 print("[start time]", s_time)
                 print("[end time]", e_time)
                 print("Time to load:", (e_time-s_time),"sec.")
                 all_headers = list(data_frame.columns)
+                data_frame_bak = data_frame.copy()
                 data_bools = data_bools_unmod.copy()
                 # included_headers = all_headers.copy() # save backup of all column names
                 # print("included headers:")
@@ -1466,38 +1117,15 @@ def main():
                         
                         m_str = str(month).rjust(2, '0')
                         d_str = str(day).rjust(2, '0')
-                        print("searching the following string...")
+                        # print("searching the following string...")
                         # print(m_str + '/' + d_str + '/' + str(year))
                         search_ele = str(m_str + '/' + d_str + '/' + str(year))
-                        print(search_ele)
+                        # print(search_ele)
                     else:
                         search_ele = input("Enter the search value: ")
                     
-                    # TODO: Need to make 1:1 list of variable type so that I can 
-                    #       check and see if the correct element was input
+                    search(data_frame, col_number, search_ele)
                     
-
-                    is_found = False
-                    s_time = time.time()
-                    # should return a bool
-                    is_found = search(data_frame, col_number, search_ele) # TODO: search function
-                    
-                    datalst = data_frame[all_headers[col_number]].to_list()
-
-                    
-                    e_time = time.time()
-                    
-                    
-                    if (is_found):
-                        print("Data found!")
-                        print("Time to process is", (e_time-s_time),"sec.")
-                    else:
-                        print(f"could not locate (({search_ele})) in the data")
-                        print("Total search time was", (e_time-s_time),"sec.")
-                        print("Either the data wasn't in the table or you should")
-                        print("check that you entered the information correctly")
-                    
-                    input("Press any key to continue")
                     continue
                 
                 elif (sub_menu_option == 25):
@@ -1533,39 +1161,9 @@ def main():
                         clean_lst = new_lst
                     
                     sortData(clean_lst, sort_type)
-                    print(clean_lst)
+                    # print(clean_lst)
                     input("Press any key to continue")
                     continue
-                    
-                    
-                    
-                # elif (sub_menu_option == 25):
-                #     # add back a dropped column
-                #     # input("adding back a dropped column...")
-                #     # Drop Columns
-                #     clear()
-                     
-                #     if (len(excluded_headers) == 0):
-                #         print_msg = "There are currently 0 excluded columns so there's none to add back!"
-                #         continue
-                     
-                #     while (col_number != -1):
-                #         printInclHeaders(excluded_headers)
-                #         col_number = getResponse(printInclHeaders, -1, len(excluded_headers)-1, arg_list=excluded_headers)
-                #         # print("col_number now",col_number)
-                        
-                #         if (col_number != -1):
-                            
-                #             included_headers.append(excluded_headers[col_number])
-                #             # print(f"included headers last: {included_headers[-1]}")
-                #             excluded_headers.remove(excluded_headers[col_number])
-                #             # print("excluded_headers now***")
-                #             # print(excluded_headers)
-                            
-                #     print("Finished adding back columns")
-                #     print(f"There are currently {len(excluded_headers)} items still being excluded.")
-                #     col_number = 0
-                #     input("press any key to continue...")
                     
                 elif (sub_menu_option == 26):
                     # back to the main menu
