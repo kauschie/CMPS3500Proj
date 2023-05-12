@@ -1515,6 +1515,8 @@ def main():
                     else:
                         print(f"could not locate (({search_ele})) in the data")
                         print("Total search time was", (e_time-s_time),"sec.")
+                        print("Either the data wasn't in the table or you should")
+                        print("check that you entered the information correctly")
                     
                     input("Press any key to continue")
                     continue
