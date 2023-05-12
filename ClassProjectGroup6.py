@@ -345,12 +345,20 @@ def readFile(file_name="Crime_Data_from_2017_to_2019.csv"):
     '''Pass in name of data file, will call the main file we were given by default
         Returns: pandas dataframe containing all of the data less the 5 dropped columns'''
     csv_arr = pd.read_csv(file_name, quotechar='"', delimiter=',', skipinitialspace=True, dtype = {"Date Rptd":"string", "year": "int32"} )
+    
     drop_columns = ['Unnamed: 0', 'Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4', 'Cross Street']
-    csv_arr.drop(drop_columns, axis= 1, inplace = True)
+    
+    try:
+        csv_arr.drop(drop_columns, axis= 1, inplace = True)
+    except:
+        pass
     
     headers = list(csv_arr.columns)
 
     return(csv_arr)
+
+def getColumnDictionary(column_name):
+    pass
 
 
 '''Gets a list of csv files in the current working directory'''
@@ -562,62 +570,6 @@ def describeColumn2(clean_sorted_lst, col_number, data_bools, **kwargs):
             print ("STDEV: N/A")
             print ("Variance: N/A")
     
-    
-
-
-def describeColumn(data_list, col_number, data_bools):
-    # TODO
-    
-    counts(data_list)
-    uniqueCounts(data_list)
-
-    # # only call STDEV and Variance when needed
-    # if (col_number  == 4 or col_number==12 or 27 <= col_number <= 29  ):
-    #     stanDev(data_list);
-    #     # variance(data_list);
-        
-    if (data_bools[col_number]["mean"] == True):
-        stanDev(data_list)
-    else:
-        print("Mean: N/A")
-        print ("STDEV: N/A")
-        print ("Variance: N/A")
-        
-    if (data_bools[col_number]["median"] == True):
-        medianFunc(data_list)
-    else:
-        print("Median: N/A") 
-        
-    if (data_bools[col_number]["mode"] == True):
-        modeFunc(data_list)
-    else:
-        print("Mode: N/A")
-
-    # if (data_bools[col_number]["stdev"] == True):
-    #     stanDev(data_list)
-    # else:
-    #     print ("Standard Deviation: N/A")
-    #     print ("Variance: N/A")
-       
-    if (data_bools[col_number]["min"] == True):
-        minFunc(data_list)
-    else:
-        print("Minimum: N/A")
-
-    if (data_bools[col_number]["max"] == True):
-        maxFunc(data_list)
-    else:
-        print("Maximum: N/A")
-
-    # if (data_bools[col_number]["var"] == True):
-    #     variance(data_list)
-    # else:
-    #     print ("Variance: N/A")
-
-
-   # print(data_list)
-    
-    pass
 
 def printDataset(data_frame, num_rows):
     pd.set_option('display.max_columns', None)
@@ -850,7 +802,6 @@ def printMenu():
     print(f"Select how many rows to print")
     print("Enter -1 to go back")
 
-
 '''Main Logic // Menu loop'''
 def main():
     
@@ -1004,9 +955,7 @@ def main():
                             
                             # print("included_headers now***")
                             # print(all_headers)
-                        
-                        
-                          
+                               
                     print("Finished removing columns")
                     print(f"There are currently {len(all_headers)} columns of data included.")
                     input("press any key to continue...")
@@ -1022,11 +971,6 @@ def main():
                     if (col_number == -1):
                         col_number = 0
                         continue
-                    
-                    # TODO: function to retrieve all of the stats: describeColumn
-                    #  - return dictionary of count, unique, mean, median, mode, stdev, variance, minimum, maximum
-
-                    # datalst = data_frame[all_headers[col_number]].to_list()
                     
                     print("cleaning data...")
                     clean_df = data_frame.dropna(axis = 'index', subset = [all_headers[col_number]])
@@ -1078,11 +1022,7 @@ def main():
                         else:
                             describeColumn2(clean_sorted_lst, col_number, data_bools)
                             
-                        # describeColumn(datalst, col_number, data_bools)
-                        # describeColumn(clean_lst, col_number, data_bools)
-                        #stats = describeColumn(data_frame, included_headers[col_number]) # TODO
                         e_time = time.time()
-                        # printStats(stats) # TODO
                         
                         print("stats printed successfully!")
                         print("Time to process is", (e_time-s_time),"sec.")
@@ -1133,9 +1073,6 @@ def main():
                         # print(search_ele)
                     else:
                         search_ele = input("Enter the search value: ")
-                    
-                    
-                    
                     
                     search(data_frame, col_number, search_ele)
                     
