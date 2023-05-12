@@ -1306,24 +1306,6 @@ def main():
                     printHeaders(all_headers)
                     print("*****************")
                     print("*****************")
-                    # print("*****************")
-                    # print("*****************")
-                    # print("Included Columns:")
-                    # print("*****************")
-                    # if (len(included_headers) > 0):
-                    #     printHeaders(included_headers)
-                    # else:
-                    #     print("No columns are currently included")
-                    # print("*****************")
-                    # print("*****************")
-                    # print("Excluded Columns:")
-                    # print("*****************")
-                    # if (len(excluded_headers) > 0):
-                    #     printHeaders(excluded_headers)
-                    # else:
-                    #     print("No columns are currently excluded")
-                    # print("*****************")
-                    # print("*****************")
                     input(f"\npress enter to continue...")
                     continue
                     
