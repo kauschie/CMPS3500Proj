@@ -488,6 +488,7 @@ def sortData(lst, format):
     s_time = time.time()
     if (format == 1):
         heapSort2(lst, len(lst))
+        # heapSort1(lst)
     elif (format == 2):
         minHeapSort(lst, len(lst))
     else:
