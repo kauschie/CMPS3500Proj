@@ -111,11 +111,11 @@ def totalUniqueCount(filename):
     now = datetime.now()
     #pandaBegin = time.time()
     # group data by year and count unique crimes
-    countsByYear = filename.groupby('year')['DR_NO'].nunique()
+    count_by_year = filename.groupby('year')['DR_NO'].nunique()
     
     # sort the counts in descending order and return them
-    sortedCounts = sorted(countsByYear.items(), key=lambda x: x[1], reverse=True)
-    for year, count in sortedCounts:
+    sorted_counts = sorted(count_by_year.items(), key=lambda x: x[1], reverse=True)
+    for year, count in sorted_counts:
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] ""{}: Total Unique Crimes {}".format(year, count))
     #pandaTimeEnd = time.time()
@@ -126,14 +126,14 @@ def countCrimesByArea(data):
     now =datetime.now()
     #begin = time.time()
     # group data by area name and count crimes
-    countsByArea = data.groupby('AREA NAME')['Crm Cd'].count()
+    counts_by_area = data.groupby('AREA NAME')['Crm Cd'].count()
     
     # sort the counts in descending order and return the top 5
-    top5Areas = countsByArea.sort_values(ascending=False)[:5]
+    top_5_areas = counts_by_area.sort_values(ascending=False)[:5]
     
     # print the results
     
-    for area, count in top5Areas.items():
+    for area, count in top_5_areas.items():
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] {area}: {count} crimes")
        
@@ -142,21 +142,21 @@ def countCrimesByArea(data):
 
 def MonthsUniqueCrimes(data):
     # copy data and add index locater
-    dataCopy = data.copy()
-    dataCopy = data.reindex(['DATE OCC', 'DR_NO'], axis = 1)
-    dataCopy.iloc[0,1]
+    data_copy = data.copy()
+    data_copy = data.reindex(['DATE OCC', 'DR_NO'], axis = 1)
+    data_copy.iloc[0,1]
     
 
     # Convert the date column to datetime format
     data['DATE OCC'] = pd.to_datetime(data['DATE OCC'], format='%m/%d/%Y %I:%M:%S %p')
     
     # Group the data by month and count unique crimes
-    countsByMonth = data.groupby(data['DATE OCC'].dt.strftime('%B'))['DR_NO'].nunique()
+    counts_by_month = data.groupby(data['DATE OCC'].dt.strftime('%B'))['DR_NO'].nunique()
     
     # Sort the counts in ascending order and return them
     now = datetime.now()
-    sortedCounts = sorted(countsByMonth.items(), key=lambda x: x[1])
-    for month, count in sortedCounts:
+    sorted_counts = sorted(counts_by_month.items(), key=lambda x: x[1])
+    for month, count in sorted_counts:
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] ""{}: Total Unique Crimes {}".format(month, count))
 
@@ -165,15 +165,15 @@ def Top10Streets(data):
     data2019 = data[data['year'] == 2019]
 
     # Count the occurrences of each street name
-    streetCounts = data2019['LOCATION'].value_counts()
+    street_counts = data2019['LOCATION'].value_counts()
 
     # Select the top 10 streets with the most crimes
-    topStreets = streetCounts.head(10)
+    top_streets = street_counts.head(10)
 
     # Print the results
     now = datetime.now()
     # for i, (street, count) in enumerate(topStreets.iteritems()):
-    for i, (street, count) in enumerate(topStreets.items()):
+    for i, (street, count) in enumerate(top_streets.items()):
         current_time = now.strftime("%H:%M:%S.%f")
         easy_street = " ".join(street.split())
         print(f"[{current_time}] {i+1}. {easy_street}: {count} crimes")
@@ -182,20 +182,20 @@ def Top5HWood(data):
     now = datetime.now()
     
     # Filter the data to include only the specified area
-    areaName = 'Hollywood'
-    areaData = data[data['AREA NAME'] == areaName].copy() # make a copy of the slice
-    areaData.loc[:, 'TIME OCC'] = pd.to_datetime(areaData['TIME OCC'].astype(str), format='%H%M', errors='coerce')
+    area_name = 'Hollywood'
+    area_data = data[data['AREA NAME'] == area_name].copy() # make a copy of the slice
+    area_data.loc[:, 'TIME OCC'] = pd.to_datetime(area_data['TIME OCC'].astype(str), format='%H%M', errors='coerce')
     
     # Count the number of crimes that occur in each hour of the day
-    crimeCounts = areaData.groupby(areaData['TIME OCC'].dt.hour).size().sort_values(ascending=False)
+    crime_counts = area_data.groupby(area_data['TIME OCC'].dt.hour).size().sort_values(ascending=False)
     
     # Select the top n hours with the most crimes
-    topHours = crimeCounts.head(5)
+    top_hours = crime_counts.head(5)
     
     # Print the results
     
     # for i, (hour, count) in enumerate(topHours.iteritems()):
-    for i, (hour, count) in enumerate(topHours.items()):
+    for i, (hour, count) in enumerate(top_hours.items()):
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] {i+1}: {int(hour):02d}:00 - {int(hour):02d}:59: {count} crimes")
 
@@ -205,32 +205,32 @@ def printCCFrauds(data):
     data["DATE OCC"] = pd.to_datetime(data["DATE OCC"], format="%m/%d/%Y %I:%M:%S %p")
     
     # Filter for major credit card frauds in 2019
-    fraudData = data.loc[(data["Crm Cd Desc"] == "CREDIT CARDS, FRAUD USE ($950 & UNDER") & (data["year"] == 2019), :]
+    fraud_data = data.loc[(data["Crm Cd Desc"] == "CREDIT CARDS, FRAUD USE ($950 & UNDER") & (data["year"] == 2019), :]
 
-    if len(fraudData) == 0:
+    if len(fraud_data) == 0:
         current_time = now.strftime("%H:%M:%S.%f")
         print(f'[{current_time}] No credit card frauds found in 2019')
         return
 
     # Extract month from DATE OCC column using .dt accessor
-    fraudData = fraudData.assign(month=fraudData["DATE OCC"].dt.month)
+    fraud_data = fraud_data.assign(month=fraud_data["DATE OCC"].dt.month)
 
     # Count the number of frauds by month
-    fraudCountsByMonth = fraudData["month"].value_counts()
+    fraud_counts_by_month = fraud_data["month"].value_counts()
 
     # Find the month(s) with the most frauds
-    maxFraudCount = fraudCountsByMonth.max()
-    monthsWithMaxFraud = fraudCountsByMonth[fraudCountsByMonth == maxFraudCount].index
-    monthNames = [calendar.month_name[m] for m in monthsWithMaxFraud]
+    max_fraud_count = fraud_counts_by_month.max()
+    months_with_max_fraud = fraud_counts_by_month[fraud_counts_by_month == max_fraud_count].index
+    month_names = [calendar.month_name[m] for m in months_with_max_fraud]
 
     # Print the result
-    if len(monthNames) == 1:
+    if len(month_names) == 1:
         current_time = now.strftime("%H:%M:%S.%f")
-        print(f'[{current_time}] The month with the most major credit card frauds in 2019 is {monthNames[0]}, with {maxFraudCount} frauds.')
+        print(f'[{current_time}] The month with the most major credit card frauds in 2019 is {month_names[0]}, with {max_fraud_count} frauds.')
     else:
-        monthStr = " and ".join(monthNames)
+        month_str = " and ".join(month_names)
         current_time = now.strftime("%H:%M:%S.%f")
-        print(f'[{current_time}] The months with the most major credit card frauds in 2019 are {monthStr}, with {maxFraudCount} frauds each.')
+        print(f'[{current_time}] The months with the most major credit card frauds in 2019 are {month_str}, with {max_fraud_count} frauds each.')
     
     # Loop through all months and print out the fraud data for each month
     #For testing purposes
@@ -241,21 +241,21 @@ def printCCFrauds(data):
        
 def MostTime(data):
     now = datetime.now()
-    dataCopy = data.copy()
-    dataCopy.iloc[0,1]
+    data_copy = data.copy()
+    data_copy.iloc[0,1]
   
     # Create a new column with the time difference between the report date and the date the crime occurred
-    dataCopy['DATE OCC'] = pd.to_datetime(dataCopy['Date Rptd'], format='%m/%d/%Y %I:%M:%S %p') - pd.to_datetime(dataCopy['DATE OCC'], format='%m/%d/%Y %I:%M:%S %p')
+    data_copy['DATE OCC'] = pd.to_datetime(data_copy['Date Rptd'], format='%m/%d/%Y %I:%M:%S %p') - pd.to_datetime(data_copy['DATE OCC'], format='%m/%d/%Y %I:%M:%S %p')
     
     # Sort the DataFrame by the time difference column in descending order
-    sortedData = dataCopy.sort_values(by='DATE OCC', ascending=False)
+    sorted_data = data_copy.sort_values(by='DATE OCC', ascending=False)
     
     # Get the details of the crime wit\nh the highest time difference
-    maxReportTime = sortedData.iloc[0]
+    max_reported_time = sorted_data.iloc[0]
     current_time = now.strftime("%H:%M:%S.%f")
-    print(f"[{current_time}] Time difference in hours: {maxReportTime['DATE OCC'].total_seconds() / 3600}")
+    print(f"[{current_time}] Time difference in hours: {max_reported_time['DATE OCC'].total_seconds() / 3600}")
     # Print the details of the crime
-    for key, value in maxReportTime.to_dict().items():
+    for key, value in max_reported_time.to_dict().items():
         current_time = now.strftime("%H:%M:%S.%f")
         if (key == 'LOCATION'):
             easy_street = " ".join(value.split())
@@ -266,62 +266,62 @@ def MostTime(data):
 def printMostCommonCrime(data):
     now = datetime.now()
      # Count the occurrences of each crime type
-    crimeCounts = data.groupby('Crm Cd Desc').size().sort_values(ascending=False)
+    crime_counts = data.groupby('Crm Cd Desc').size().sort_values(ascending=False)
 
     # Select the top 10 most frequent crime types
-    topCrimeTypes = crimeCounts.head(10)
+    top_crime_types = crime_counts.head(10)
 
     # Print the results
     # for i, (crimeType, count) in enumerate(topCrimeTypes.iteritems()):
-    for i, (crimeType, count) in enumerate(topCrimeTypes.items()):
+    for i, (crimeType, count) in enumerate(top_crime_types.items()):
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] {i+1}. {crimeType}: {count}")
 
 def printLALunchTime(data):
     now = datetime.now()
     # Make a copy of the data so that the original data is not modified
-    dataCopy = data.copy()
-    dataCopy['DATE OCC'] = pd.to_datetime(dataCopy['Date Rptd'], format='%m/%d/%Y %I:%M:%S %p') - pd.to_datetime(dataCopy['DATE OCC'], format='%m/%d/%Y %I:%M:%S %p')
+    data_copy = data.copy()
+    data_copy['DATE OCC'] = pd.to_datetime(data_copy['Date Rptd'], format='%m/%d/%Y %I:%M:%S %p') - pd.to_datetime(data_copy['DATE OCC'], format='%m/%d/%Y %I:%M:%S %p')
     # Convert the Date Occurred column to a datetime datatype
-    dataCopy['DATE OCC'] = pd.Timestamp('1900-01-01') + pd.to_timedelta(dataCopy['DATE OCC'], unit='D')
+    data_copy['DATE OCC'] = pd.Timestamp('1900-01-01') + pd.to_timedelta(data_copy['DATE OCC'], unit='D')
 
     # Extract the victim sex and time of the crime
-    dataCopy['Vict Sex'] = dataCopy['Vict Sex'].str.upper()
+    data_copy['Vict Sex'] = data_copy['Vict Sex'].str.upper()
 
     # Convert 'TIME OCC' column to string and remove any non-numeric characters
-    dataCopy['TIME OCC'] = dataCopy['TIME OCC'].astype(str).str.replace(r'\D', '', regex=True)
+    data_copy['TIME OCC'] = data_copy['TIME OCC'].astype(str).str.replace(r'\D', '', regex=True)
 
     # Convert 'TIME OCC' column to datetime object
-    dataCopy['TIME OCC'] = pd.to_datetime(dataCopy['TIME OCC'], format='%H%M', errors='coerce')
+    data_copy['TIME OCC'] = pd.to_datetime(data_copy['TIME OCC'], format='%H%M', errors='coerce')
 
     # Remove any rows with missing datetime values
-    dataCopy.dropna(subset=['TIME OCC'], inplace=True)
+    data_copy.dropna(subset=['TIME OCC'], inplace=True)
 
     # Extract hour component from datetime object
-    dataCopy['TIME OCC'] = dataCopy['TIME OCC'].dt.hour
+    data_copy['TIME OCC'] = data_copy['TIME OCC'].dt.hour
 
     # Filter the dataset to only include crimes between 11:00am and 1:00pm
-    dataLunchTime = dataCopy[(dataCopy['TIME OCC'] >= 11) & (dataCopy['TIME OCC'] <= 13)]
+    data_lunch_time = data_copy[(data_copy['TIME OCC'] >= 11) & (data_copy['TIME OCC'] <= 13)]
 
     # Calculate the number of crimes for each gender
-    numFemalVictims = len(dataLunchTime[dataLunchTime['Vict Sex'] == 'F'])
-    numMaleVictims = len(dataLunchTime[dataLunchTime['Vict Sex'] == 'M'])
+    num_female_victims = len(data_lunch_time[data_lunch_time['Vict Sex'] == 'F'])
+    num_male_victims = len(data_lunch_time[data_lunch_time['Vict Sex'] == 'M'])
 
     # Print the results
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] Evidence:")
     
     current_time = now.strftime("%H:%M:%S.%f")
-    print(f"\n[{current_time}] Number of female victims between 11:00am and 1:00pm: {numFemalVictims}")
+    print(f"\n[{current_time}] Number of female victims between 11:00am and 1:00pm: {num_female_victims}")
     
     current_time = now.strftime("%H:%M:%S.%f")
-    print(f"[{current_time}] Number of male victims between 11:00am and 1:00pm: {numMaleVictims}")
+    print(f"[{current_time}] Number of male victims between 11:00am and 1:00pm: {num_male_victims}")
 
     print(f"\n[{current_time}] Answer:")
-    if numFemalVictims > numMaleVictims:
+    if num_female_victims > num_male_victims:
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"\n[{current_time}] Women are more likely to be the victim of a crime during lunchtime.")
-    elif numFemalVictims < numMaleVictims:
+    elif num_female_victims < num_male_victims:
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"\n[{current_time}] Men are more likely to be the victim of a crime during lunchtime.")
     else:
@@ -335,13 +335,13 @@ def OlderManTop5(data):
     data["DATE OCC"] = pd.to_datetime(data["DATE OCC"], format="%m/%d/%Y %I:%M:%S %p")
 
     # Filter for crimes that occurred in December 2018 and involved a victim age 65 or older and male gender
-    filteredData = data.loc[(data["DATE OCC"].dt.year == 2018) & (data["DATE OCC"].dt.month == 12) & (data["Vict Age"] >= 65) & (data["Vict Sex"] == "M"), :]
+    filtered_data = data.loc[(data["DATE OCC"].dt.year == 2018) & (data["DATE OCC"].dt.month == 12) & (data["Vict Age"] >= 65) & (data["Vict Sex"] == "M"), :]
 
     # Count the number of crimes in each area and sort in descending order
-    crimeCountByArea = filteredData["AREA NAME"].value_counts().sort_values(ascending=False)
+    crime_count_by_area = filtered_data["AREA NAME"].value_counts().sort_values(ascending=False)
     
     # Print the top 5 dangerous areas
-    for i,(area, count) in enumerate(crimeCountByArea.head(5).items(), 1):
+    for i,(area, count) in enumerate(crime_count_by_area.head(5).items(), 1):
         current_time = now.strftime("%H:%M:%S.%f")
         print(f"[{current_time}] {i}. {area}: {count}")
 
@@ -850,50 +850,50 @@ def printAscDescMenu():
     
 def printDataAnalysis(df):
     now = datetime.now()
-    dataCopy = df.copy()
+    data_copy = df.copy()
     
     print("Data Analysis:")
     print("***************")
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"[{current_time}] 1. Show the total unique count of crimes per year sorted in descending order:")
-    totalUniqueCount(dataCopy)
+    totalUniqueCount(data_copy)
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 2. Show the top 5 areas with the most crime events in all years:")
-    countCrimesByArea(dataCopy)
+    countCrimesByArea(data_copy)
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 3. Show all months and the unique total count of crimes sorted in increasing order.")
-    MonthsUniqueCrimes(dataCopy)
+    MonthsUniqueCrimes(data_copy)
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 4. Show the top 10 streets with the most crimes in LA in 2019. Also display the total amount of crimes in each street.")
-    Top10Streets(dataCopy)
+    Top10Streets(data_copy)
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 5. Show the top 5 most dangerous times (in hours) to be in Hollywood. Also display the total amount of crimes in each hour.")
-    Top5HWood(dataCopy)
+    Top5HWood(data_copy)
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 6. Print the details of the crime that that took the most time (in hours) to be reported.")
-    MostTime(dataCopy)
+    MostTime(data_copy)
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 7. Show the 10 top most common crime types (Crm Cd Desc) overall across all years.")
-    printMostCommonCrime(dataCopy)
+    printMostCommonCrime(data_copy)
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 8. Are woman or men more likely to be the victim of a crime in LA between lunch time (11:00am and 1:00pm)?. Support of your answer.")
-    printLALunchTime(dataCopy)
+    printLALunchTime(data_copy)
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 9. What is the month the has the most major credit card frauds (Crm Cd Desc = 'CREDIT CARDS, FRAUD USE ($950 & UNDER')) in LA in 2019.")
-    printCCFrauds(dataCopy)
+    printCCFrauds(data_copy)
     
     current_time = now.strftime("%H:%M:%S.%f")
     print(f"\n[{current_time}] 10. List the top 5 more dangerous areas for older man (age from 65 and more) in december of 2018.")
-    OlderManTop5(dataCopy)
+    OlderManTop5(data_copy)
    
  
 def printMenu():
