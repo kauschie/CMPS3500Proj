@@ -487,7 +487,7 @@ def sortData(lst, format):
         format = 2      Descending'''
     s_time = time.time()
     if (format == 1):
-        heapSort(lst)
+        heapSort2(lst, len(lst))
     elif (format == 2):
         minHeapSort(lst, len(lst))
     else:
@@ -517,9 +517,29 @@ def minHeapify(lst, n, i):
         (lst[i], lst[smallest]) = (lst[smallest], lst[i])
         # recursively minheapify the subtree
         minHeapify(lst, n, smallest)
+
+# faster heapify that follows minheap which was faster
+def heapify2(lst, n, i):
+    ''' creates a maxheap from a list of items'''
+    biggest = i    #initialize biggest as root
+    l = 2 * i + 1 # left child
+    r = 2 * i + 2 # right child
+
+    #check left child is smaller
+    if l < n and lst[l] > lst[biggest]:
+        biggest = l
     
+    # check if right child is smaller
+    if r < n and lst[r] > lst[biggest]:
+        biggest = r
+    
+    # swap if biggest is not root
+    if biggest != i:
+        (lst[i], lst[biggest]) = (lst[biggest], lst[i])
+        # recursively minheapify the subtree
+        heapify2(lst, n, biggest)
 
-
+# previous implementation, leaving for historical purposes until we know that everything works fully
 def heapify(lst, i, upper):
     ''' creats a maxheap from a list of items'''
     while (True):
@@ -564,6 +584,16 @@ def heapSort(lst):
     for end in range(len(lst)-1, 0, -1):
         lst[0], lst[end] = lst[end], lst[0]
         heapify(lst, 0, end)
+        
+def heapSort2(lst, n):
+    '''sorts by heapsort using minheap
+        this results in a sorted list in descending order'''
+    for i in range(int(n/2) -1, -1, -1):
+        heapify2(lst, n, i)
+        
+    for i in range(n-1, -1, -1):
+        lst[0], lst[i] = lst[i], lst[0]
+        heapify2(lst, i, 0)
 
 def minHeapSort(lst, n):
     '''sorts by heapsort using minheap
